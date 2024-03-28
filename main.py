@@ -1,8 +1,9 @@
 import argparse
 import json
 import os
-
 import pandas as pd
+
+from toposort import topological_sort
 
 
 SPECIAL_TYPES = set(['PERSON_NAME', 'PERSON_EMAIL'])
@@ -69,6 +70,8 @@ def main():
     generator_json_data = get_json_data(input_file_path)
     tables = generator_json_data["tables"]
     
+    table_order = topological_sort(generator_json_data)
+    
     # output each table name and its column in a different csv file
     for table in tables:
         table_name = table["tableName"]
@@ -84,6 +87,8 @@ def main():
         df = pd.DataFrame(columns=column_names)
         df.to_csv(output_path, index=False)
         print(f"Table {table_name} written to {output_path}")
+
+
 
 if __name__ == '__main__':
     main()
