@@ -1,7 +1,7 @@
 import math
 import os
-from typing import List
 import pandas as pd
+import IOHandler
 
 from special_types import SpecialTypes
 
@@ -131,5 +131,5 @@ def is_foreign_key(table_schema, column_name):
                 return (True, len(fk["fieldName"]))
     return (False, 0)
 
-def get_foreignkey_data_set(foreignTable, column_name: List[str],):
-    return
+def get_foreignkey_data_set(foreign_table: str, column_name: list[str], output_folder: str):
+    pks: list[list[str]] = IOHandler.read_csv_get_primary_keys(f"{output_folder}/{foreign_table}.csv", column_name)
