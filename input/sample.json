@@ -2,6 +2,7 @@
     "tables": [
         {
             "tableName": "User",
+            "numRows": 100,
             "columns": [
                 {
                     "fieldName": "name",
@@ -28,6 +29,7 @@
         },
         {
             "tableName": "FriendsList",
+            "numRows": 10,
             "columns": [
                 {
                     "fieldName": "friend1",
