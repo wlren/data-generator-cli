@@ -1,0 +1,55 @@
+{
+    "tables": [
+        {
+            "tableName": "User",
+            "columns": [
+                {
+                    "fieldName": "name",
+                    "type": "text",
+                    "specialType": "PERSON_NAME",
+                    "isUnique": true
+                },
+                {
+                    "fieldName": "age",
+                    "type": "integer",
+                    "distribution": {
+                        "type": "normal",
+                        "mean": 30,
+                        "stddev": 5
+                    }
+                },
+                {
+                    "fieldName": "email",
+                    "type": "text",
+                    "specialType": "PERSON_EMAIL"
+                }
+            ],
+            "primary_key": ["Name", "Email"]
+        },
+        {
+            "tableName": "FriendsList",
+            "columns": [
+                {
+                    "fieldName": "friend1",
+                    "type": "text"
+                },
+                {
+                    "fieldName": "friend2",
+                    "type": "text"
+                }
+            ],
+            "foreign_key": [
+                {
+                    "fieldName": "friend1",
+                    "tableName": "User",
+                    "references": "Name"
+                },
+                {
+                    "fieldName": "friend2",
+                    "tableName": "User",
+                    "references": "Name"
+                }
+            ]
+        }
+    ]
+}
