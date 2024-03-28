@@ -40,12 +40,8 @@ def get_allowable_data(column, special_data):
     constraints = column.get('constraints', {})
     if not constraints:
         return special_data
-
-    allowable_data = []
-    for data in special_data:
-        if not meet_constraints(data_normal_type, data, constraints):
-            continue
-        allowable_data.append(data)
+    
+    allowable_data = list(filter(lambda datum: meet_constraints(data_normal_type, datum, constraints), special_data))
 
     return allowable_data
 
