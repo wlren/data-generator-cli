@@ -2,7 +2,7 @@ import pandas as pd
 
 from toposort import topological_sort
 import IOHandler
-from generate_utils import generate_special_data
+import generate_utils as gen
 # SpecialTypes.PERSON_EMAIL.name for string representation
 
 def init_generator():
@@ -30,19 +30,28 @@ def main():
                 break
 
         column_data = {}
+        primary_key = table["primary_key"]
+    
+        # # Composite key handling
+        if len(primary_key) > 1:
+            primary_key_data = gen.generate_composite_key_data(primary_key, table, seed)
+            for key in primary_key_data:
+                column_data[key] = primary_key_data[key]
+
+        
         for column in table["columns"]:
-            if 'specialType' in column:
-                # Generate data for columns with a specialType
-                column_data[column["fieldName"]] = generate_special_data(column, table["numRows"], seed)
+            if column["fieldName"] in primary_key and len(primary_key) > 1:
+                next
+            elif column["fieldName"] in primary_key:
+                column_data[column["fieldName"]] = gen.generate_primary_key_data(column, table, seed)
+            elif 'specialType' in column:
+                column_data[column["fieldName"]] = gen.generate_special_data(column, table, seed)
             else:
-                # Placeholder for generating data for other types of columns
-                # This part needs to be implemented based on column specifications
-                pass
+                column_data[column["fieldName"]] = gen.generate_column_data(column, table, seed)
 
         df = pd.DataFrame(column_data)
 
         IOHandler.writeCSV(output_directory_path, df, table_name, exclude_header)
     
-
 if __name__ == '__main__':
     main()

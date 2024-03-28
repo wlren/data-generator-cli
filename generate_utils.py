@@ -62,7 +62,7 @@ def get_allowable_special_data(column, special_data):
 
     return allowable_data
 
-def generate_special_data(column, num_rows, seed):
+def generate_special_data(column, table, seed):
     if 'specialType' in column and not hasattr(SpecialTypes, column['specialType']):
         raise ValueError(f"Special type {column['specialType']} not recognized")
 
@@ -77,6 +77,7 @@ def generate_special_data(column, num_rows, seed):
     if not isNullable and percentageNull > 0:
         raise ValueError("Column is not nullable but percentageNull > 0")
     isRepeatable = not isUnique
+    num_rows = table['numRows']
     
     numRowsToSample = math.floor(num_rows * (1 - percentageNull))
     numNullRows = num_rows - numRowsToSample
@@ -96,3 +97,22 @@ def generate_special_data(column, num_rows, seed):
         else:
             result.append(sampled_data.pop())
     return result
+
+def generate_composite_key_data(primary_keys, table, seed):
+    return
+
+def generate_primary_key_data(column, table, seed):
+    return
+
+def generate_column_data(column, table, seed):
+    return
+
+def is_foreign_key(table_schema, column_name):
+    if "foreign_key" in table_schema:
+        for fk in table_schema["foreign_key"]:
+            if fk["fieldName"] == column_name:
+                return True
+    return False
+
+def get_foreignkey_data_set(foreignTable, column_name):
+    return

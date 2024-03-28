@@ -44,6 +44,7 @@
                     "type": "text"
                 }
             ],
+            "primary_key": ["friend1", "friend2"],
             "foreign_key": [
                 {
                     "fieldName": "friend1",
