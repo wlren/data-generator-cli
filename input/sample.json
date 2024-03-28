@@ -8,7 +8,11 @@
                     "fieldName": "name",
                     "type": "text",
                     "specialType": "PERSON_NAME",
-                    "isUnique": true
+                    "isUnique": true,
+                    "constraints": {
+                        "minLength": 1,
+                        "maxLength": 5
+                    }
                 },
                 {
                     "fieldName": "age",
@@ -25,7 +29,10 @@
                     "specialType": "PERSON_EMAIL"
                 }
             ],
-            "primary_key": ["Name", "Email"]
+            "primary_key": [
+                "name",
+                "email"
+            ]
         },
         {
             "tableName": "FriendsList",
@@ -44,12 +51,12 @@
                 {
                     "fieldName": "friend1",
                     "tableName": "User",
-                    "references": "Name"
+                    "references": "name"
                 },
                 {
                     "fieldName": "friend2",
                     "tableName": "User",
-                    "references": "Name"
+                    "references": "name"
                 }
             ]
         }
