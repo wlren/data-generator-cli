@@ -21,8 +21,8 @@ def get_json_data(input_file_path):
 
     return data
 
-def writeCSV(output_directory_path, df, table_name):
+def writeCSV(output_directory_path, df, table_name, excludeHeader):
     os.makedirs(output_directory_path, exist_ok=True)
     output_path = os.path.join(output_directory_path, f"{table_name}.csv")
-    df.to_csv(output_path, index=False)
+    df.to_csv(output_path, index=False, header = not excludeHeader)
     print(f"Table {table_name} written to {output_path}")
