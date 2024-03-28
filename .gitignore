@@ -158,14 +158,3 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-
-data/kaggle_1m_dataset.csv
-**/*bert-base-uncased/
-finetuned_models/
-data/sample_kaggle.py
-data/tabular-dataset-ready-for-malicious-url-detection.zip
-data/test_dataset.csv
-data/train_dataset.csv
-
-.DS_STORE
-data/mlm/*/
