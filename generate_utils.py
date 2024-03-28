@@ -19,16 +19,29 @@ def meet_text_constraints(datum, constraints):
                 return False
     return True
 
+def meet_constraints(data_type, datum, constraints):
+    if data_type == 'text':
+        return meet_text_constraints(datum, constraints)
+    elif data_type == 'int':
+        # return meet_int_constraints(datum, constraints)
+        pass
+    else:
+        raise ValueError(f"Data type {data_type} not recognized")
+
 def get_allowable_data(column, special_data):
-    normal_type = column['type']
-    allowable_constraints = CONSTRAINTS_BY_TYPE[normal_type]
+    data_normal_type = column['type']
+    allowable_constraints = CONSTRAINTS_BY_TYPE[data_normal_type]
     for constraint in column.get('constraints', {}):
         if constraint not in allowable_constraints:
-            raise ValueError(f"Constraint {constraint} not allowed for type {normal_type}")
+            raise ValueError(f"Constraint {constraint} not allowed for type {data_normal_type}")
     
+    constraints = column.get('constraints', {})
+    if not constraints:
+        return special_data
+
     allowable_data = []
     for data in special_data:
-        if not meet_text_constraints(data, column.get('constraints', {})):
+        if not meet_constraints(data_normal_type, data, constraints):
             continue
         allowable_data.append(data)
 
