@@ -1,7 +1,7 @@
 import math
 import os
 import pandas as pd
-
+import distribution
 from special_types import SpecialTypes
 
 CONSTRAINTS_BY_TYPE = {
@@ -105,8 +105,13 @@ def generate_primary_key_data(column, table, seed):
     return
 
 def generate_column_data(column, table, seed):
-    return
+    columnType = column["type"]
+    rows = table["numRows"]
+    if is_number_type(columnType):
+        return distribution.generate_distribution(column, rows)
 
+def is_number_type(type):
+    return type == "integer" or type == "float"
 def is_foreign_key(table_schema, column_name):
     if "foreign_key" in table_schema:
         for fk in table_schema["foreign_key"]:
