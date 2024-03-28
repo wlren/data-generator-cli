@@ -2,8 +2,7 @@ import argparse
 import json
 import os
 
-import pandas as pd
-
+import numpy as np
 
 SPECIAL_TYPES = set(['PERSON_NAME', 'PERSON_EMAIL'])
 
@@ -75,6 +74,7 @@ def main():
     # output each table name and its column in a different csv file
     for table in tables:
         generate_table_data(table, output_directory_path, seed)
+
 
 if __name__ == '__main__':
     main()
