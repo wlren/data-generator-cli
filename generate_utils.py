@@ -50,7 +50,7 @@ def get_allowable_data(column, special_data):
     return allowable_data
 
 def generate_special_data(column, num_rows, seed):
-    if 'specialType' in column and  hasattr(SpecialTypes, column['specialType']):
+    if 'specialType' in column and not hasattr(SpecialTypes, column['specialType']):
         raise ValueError(f"Special type {column['specialType']} not recognized")
 
     special_filepath = os.path.join('special_data', f"{column['specialType']}.txt")
