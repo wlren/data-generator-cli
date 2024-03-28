@@ -22,7 +22,7 @@ def generate_table_data(table, output_directory_path, seed):
     for column in table["columns"]:
         if "specialType" in column:
             df[column["fieldName"]] = generate_special_data(column, num_rows, seed)
-        elif is_number_type(column["fieldName"]):
+        elif is_number_type(column["type"]):
             if "distribution" in column:
                 df[column["fieldName"]] = distribution.generate_distribution(column, num_rows)
             else: 

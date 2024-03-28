@@ -14,7 +14,6 @@ def generate_uniform_decimal_distribution(min, max, rows):
     ans = np.random.uniform(low=min, high=max, size = rows)
     return list(ans)
 
-
 def generate_distribution(column, rows):
     number_type = ["integer", "float"]
     # Given an integer / decimal type column output a list of integer with the specified constraints of the column
