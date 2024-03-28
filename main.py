@@ -17,7 +17,7 @@ def init_generator():
 
 def main():
     generator_json_data, args = init_generator()
-    input_file_path, seed, output_directory_path, exclude_header = args.input_file_path, args.seed, args.output_directory_path, args.exclude_header
+    seed, output_directory_path, exclude_header = args.seed, args.output_directory_path, args.exclude_header
 
     tables = generator_json_data["tables"]
     table_order = topological_sort(generator_json_data)
