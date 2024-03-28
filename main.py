@@ -26,8 +26,8 @@ def get_json_data(input_file_path):
 
     return data
 
-def generate_sample_data(column, num_rows, seed):
-    if column['specialType'] not in SPECIAL_TYPES:
+def generate_special_data(column, num_rows, seed):
+    if 'specialType' in column and column['specialType'] not in SPECIAL_TYPES:
         raise ValueError(f"Special type {column['specialType']} not recognized")
 
     special_filepath = os.path.join('special_data', f"{column['specialType']}.txt")
@@ -44,12 +44,13 @@ def generate_table_data(table, output_directory_path, seed):
     df = pd.DataFrame()
     for column in table["columns"]:
         if "specialType" in column:
-            df[column["fieldName"]] = generate_sample_data(column, num_rows, seed)
+            df[column["fieldName"]] = generate_special_data(column, num_rows, seed)
         else:
             # Generate placeholder data if no specialType is provided
+            column_type = column["type"]
             # TODO: make functions for each non-special type of data (text, int, boolean etc.)
             df[column["fieldName"]] = [f"{column['fieldName']}_{i+1}" for i in range(num_rows)]
-        
+
     output_path = os.path.join(output_directory_path, f"{table_name}.csv")
     df.to_csv(output_path, index=False)
     print(f"Table {table_name} written to {output_path}")
@@ -64,12 +65,11 @@ def main():
     os.makedirs(output_directory_path, exist_ok=True)
     
     print(f"Processing file: {input_file_path} with seed {seed}")
-    
+
     # Parse input json file
     generator_json_data = get_json_data(input_file_path)
     tables = generator_json_data["tables"]
-    
-    # output each table name and its column in a different csv file
+    # output each table name and its columns in a different csv file
     for table in tables:
         table_name = table["tableName"]
         # for column in table["columns"]:
