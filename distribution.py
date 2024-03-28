@@ -1,6 +1,8 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+MAX_NUMBER = 100000000
+MIN_NUMBER = 0
 def generate_normal_distribution(mean, stddev, rows):
     data = np.random.normal(mean, stddev, size=rows)
     return list(data)
@@ -13,8 +15,12 @@ def generate_uniform_integer_distribution(min, max, rows):
 def generate_uniform_decimal_distribution(min, max, rows):
     ans = np.random.uniform(low=min, high=max, size = rows)
     return list(ans)
-def generate_random_numbers(size):
-    return np.random.randint(0, 10000000, size=size)
+def generate_random_numbers(type, size):
+    if type == "integer":
+        return np.random.randint(MIN_NUMBER, MAX_NUMBER, size=size)
+    else:
+        return generate_uniform_decimal_distribution(MIN_NUMBER, MAX_NUMBER, size)
+    
 
 def generate_distribution(column, rows):
     number_type = ["integer", "float"]
@@ -48,7 +54,8 @@ def generate_distribution(column, rows):
         else:
             return []
     else:
-        return generate_random_numbers(rows)
+        type = column["type"]
+        return generate_random_numbers(type, rows)
         
 
         
@@ -74,12 +81,7 @@ def enforce_distribution_field_structure(distribution_field):
 if __name__ == '__main__':
     test = {
          "fieldName": "age",
-         "type": "integer",
-         "distribution": {
-           "type": "uniform",
-           "min": 20,
-           "max": 25
-        }
+         "type": "float",
        }
 
     print(generate_distribution(test, 500))
