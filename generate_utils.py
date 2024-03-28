@@ -2,6 +2,8 @@ import math
 import os
 import pandas as pd
 
+from special_types import SpecialTypes
+
 CONSTRAINTS_BY_TYPE = {
     'text': set(['minLength', 'maxLength']),
     'int': set(['min', 'max'])
@@ -48,8 +50,8 @@ def get_allowable_data(column, special_data):
     return allowable_data
 
 def generate_special_data(column, num_rows, seed):
-    # if column['specialType'] not in SpecialTypes.__members__:
-    #     raise ValueError(f"Special type {column['specialType']} not recognized")
+    if 'specialType' in column and  hasattr(SpecialTypes, column['specialType']):
+        raise ValueError(f"Special type {column['specialType']} not recognized")
 
     special_filepath = os.path.join('special_data', f"{column['specialType']}.txt")
     with open(special_filepath, 'r') as file:

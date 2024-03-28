@@ -27,11 +27,7 @@ def main():
         for tableObject in tables:
             if tableObject["tableName"] == table_name:
                 table = tableObject
-        
-        if not exclude_header:
-            column_names = [column["fieldName"] for column in table["columns"]]
-        else:
-            column_names = None
+                break
 
         column_data = {}
         for column in table["columns"]:
