@@ -6,8 +6,12 @@ from special_types import SpecialTypes
 
 CONSTRAINTS_BY_TYPE = {
     'text': set(['minLength', 'maxLength']),
-    'int': set(['min', 'max'])
+    'int': set(['min', 'max']),
+    'float': set(['min', 'max']),
+    'boolean': set([])
 }
+
+NUMERIC_TYPES = ['int', 'float', 'date']
 
 def meet_text_constraints(datum, constraints):
     for constraint in constraints:
@@ -21,16 +25,29 @@ def meet_text_constraints(datum, constraints):
                 return False
     return True
 
+def meet_numeric_constraints(datum, constraints):
+    for constraint in constraints:
+        if constraint == 'min':
+            min_val = constraints[constraint]
+            if datum < min_val:
+                return False
+        elif constraint == 'max':
+            max_val = constraints[constraint]
+            if datum > max_val:
+                return False
+    return True
+
 def meet_constraints(data_type, datum, constraints):
     if data_type == 'text':
         return meet_text_constraints(datum, constraints)
-    elif data_type == 'int':
-        # return meet_int_constraints(datum, constraints)
-        pass
+    elif data_type in NUMERIC_TYPES:
+        return meet_numeric_constraints(datum, constraints)
     else:
         raise ValueError(f"Data type {data_type} not recognized")
 
-def get_allowable_data(column, special_data):
+# Necessary to filter out special data that doesn't meet normal type constraints
+# e.g. for an email, user can specify max length to be 10, but the txt file may have emails with length > 10
+def get_allowable_special_data(column, special_data):
     data_normal_type = column['type']
     allowable_constraints = CONSTRAINTS_BY_TYPE[data_normal_type]
     for constraint in column.get('constraints', {}):
@@ -64,7 +81,10 @@ def generate_special_data(column, num_rows, seed):
     # sample random row indexes to be null from 0 to num_rows - 1
     nullRowIndexes = set(pd.Series(range(num_rows)).sample(n=numNullRows, random_state=seed, replace=False).tolist())
     # make sure data meets constraints
-    allowable_data = get_allowable_data(column, special_data)
+    allowable_data = get_allowable_special_data(column, special_data)
+    
+    if len(allowable_data) < numRowsToSample:
+        raise ValueError(f"Insufficient data for special type {column['specialType']} to meet constraints. Num allowable data: {len(allowable_data)}, num rows to sample: {numRowsToSample}")
 
     sampled_data = pd.Series(allowable_data).sample(n=numRowsToSample, random_state=seed, replace=isRepeatable).tolist()
     result = []
