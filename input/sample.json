@@ -29,7 +29,7 @@
                     "specialType": "PERSON_EMAIL"
                 }
             ],
-            "primary_key": ["Name", "Email"]
+            "primary_key": ["name", "email"]
         },
         {
             "tableName": "FriendsList",
@@ -48,12 +48,12 @@
                 {
                     "fieldName": "friend1",
                     "tableName": "User",
-                    "references": "Name"
+                    "references": "name"
                 },
                 {
                     "fieldName": "friend2",
                     "tableName": "User",
-                    "references": "Name"
+                    "references": "name"
                 }
             ]
         }
