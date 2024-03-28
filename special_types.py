@@ -11,5 +11,9 @@ class SpecialTypes(Enum):
     COUNTRY_NAME = auto()
     USA_STATE_CODE = auto()
     USA_STATE_NAME = auto()
+    SKILLS = auto()
+    UNIVERSITIES = auto()
+    IP_ADDRESS = auto()
+    
     
     
