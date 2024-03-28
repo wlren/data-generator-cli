@@ -16,12 +16,7 @@
                 },
                 {
                     "fieldName": "age",
-                    "type": "integer",
-                    "distribution": {
-                        "type": "normal",
-                        "mean": 30,
-                        "stddev": 5
-                    }
+                    "type": "integer"
                 },
                 {
                     "fieldName": "email",

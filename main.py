@@ -2,6 +2,7 @@ import pandas as pd
 
 from toposort import topological_sort
 import IOHandler
+import distribution
 from generate_utils import generate_special_data
 # SpecialTypes.PERSON_EMAIL.name for string representation
 
@@ -31,9 +32,12 @@ def main():
 
         column_data = {}
         for column in table["columns"]:
+            numRows = table["numRows"]
             if 'specialType' in column:
                 # Generate data for columns with a specialType
-                column_data[column["fieldName"]] = generate_special_data(column, table["numRows"], seed)
+                column_data[column["fieldName"]] = generate_special_data(column, numRows, seed)
+            elif is_number_type(column["type"]):
+                column_data[column["fieldName"]] = distribution.generate_distribution(column, numRows)
             else:
                 # Placeholder for generating data for other types of columns
                 # This part needs to be implemented based on column specifications
@@ -43,6 +47,8 @@ def main():
 
         IOHandler.writeCSV(output_directory_path, df, table_name, exclude_header)
     
+def is_number_type(type):
+    return type == "integer" or type == "float"
 
 if __name__ == '__main__':
     main()

@@ -13,6 +13,8 @@ def generate_uniform_integer_distribution(min, max, rows):
 def generate_uniform_decimal_distribution(min, max, rows):
     ans = np.random.uniform(low=min, high=max, size = rows)
     return list(ans)
+def generate_random_numbers(size):
+    return np.random.randint(0, 10000000, size=size)
 
 def generate_distribution(column, rows):
     number_type = ["integer", "float"]
@@ -45,6 +47,8 @@ def generate_distribution(column, rows):
                 return generate_uniform_integer_distribution(min, max, rows)
         else:
             return []
+    else:
+        return generate_random_numbers(rows)
         
 
         
