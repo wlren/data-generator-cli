@@ -22,6 +22,16 @@
                     "fieldName": "email",
                     "type": "text",
                     "specialType": "PERSON_EMAIL"
+                },
+                {
+                    "fieldName": "random text",
+                    "type": "text",
+                    "isNullable": true,
+                    "percentageNullable": 0.2,
+                    "constraints": {
+                        "minLength": 1,
+                        "maxLength": 5
+                    }
                 }
             ],
             "primary_key": [
@@ -42,7 +52,10 @@
                     "type": "text"
                 }
             ],
-            "primary_key": ["friend1", "friend2"],
+            "primary_key": [
+                "friend1",
+                "friend2"
+            ],
             "foreign_key": [
                 {
                     "fieldName": "friend1",

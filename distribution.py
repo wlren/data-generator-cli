@@ -22,7 +22,8 @@ def generate_random_numbers(type, size):
         return generate_uniform_decimal_distribution(MIN_NUMBER, MAX_NUMBER, size)
     
 
-def generate_distribution(column, rows):
+def generate_integer_distribution(column, rows):
+    # Generate integer column with the specified number of rows
     number_type = ["integer", "float"]
     # Given an integer / decimal type column output a list of integer with the specified constraints of the column
     if column["type"] not in number_type:
@@ -84,6 +85,6 @@ if __name__ == '__main__':
          "type": "float",
        }
 
-    print(generate_distribution(test, 500))
+    print(generate_integer_distribution(test, 500))
     # List of unsorted numbers
-    data = generate_distribution(test,500)
+    data = generate_integer_distribution(test,500)
