@@ -158,4 +158,14 @@ if __name__ == '__main__':
                         "maxLength": 5
                     }
                 }
+    column2 = {
+                    "fieldName": "name",
+                    "type": "integer",
+                    # "isUnique": True,
+                    "isNullable": False,
+                    "constraints": {
+                        "min": 0,
+                        "max": 100
+                    }
+                }
     print(generate_column_data(column, {"numRows": 100}, 0))
