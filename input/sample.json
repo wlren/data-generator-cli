@@ -17,6 +17,8 @@
                 {
                     "fieldName": "age",
                     "type": "integer",
+                    "isNullable": true,
+                    "percentageNull": 0.1,
                     "distribution": {
                         "type": "normal",
                         "mean": 30,
@@ -47,14 +49,14 @@
             "primary_key": ["friend1", "friend2"],
             "foreign_key": [
                 {
-                    "fieldName": "friend1",
+                    "fieldName": ["friend1"],
                     "tableName": "User",
-                    "references": "name"
+                    "references": ["name"]
                 },
                 {
-                    "fieldName": "friend2",
+                    "fieldName": ["friend2"],
                     "tableName": "User",
-                    "references": "name"
+                    "references": ["name"]
                 }
             ]
         }

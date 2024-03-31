@@ -1,6 +1,7 @@
 import math
 import os
 import pandas as pd
+import IOHandler
 
 from special_types import SpecialTypes
 
@@ -63,7 +64,7 @@ def get_allowable_special_data(column, special_data):
     return allowable_data
 
 def generate_special_data(column, table, seed):
-    if 'specialType' in column and not hasattr(SpecialTypes, column['specialType']):
+    if not hasattr(SpecialTypes, column['specialType']):
         raise ValueError(f"Special type {column['specialType']} not recognized")
 
     special_filepath = os.path.join('special_data', f"{column['specialType']}.txt")
@@ -101,7 +102,17 @@ def generate_special_data(column, table, seed):
 def generate_composite_key_data(primary_keys, table, seed):
     return
 
+# Handles FK check
 def generate_primary_key_data(column, table, seed):
+    is_special = 'specialType' in column
+    column.isUnique = True
+    column.isNullable = False
+    
+    if is_special:
+        return generate_special_data(column, table, seed)
+    
+    
+    
     return
 
 def generate_column_data(column, table, seed):
@@ -110,9 +121,9 @@ def generate_column_data(column, table, seed):
 def is_foreign_key(table_schema, column_name):
     if "foreign_key" in table_schema:
         for fk in table_schema["foreign_key"]:
-            if fk["fieldName"] == column_name:
-                return True
-    return False
+            if column_name in fk["fieldName"]:
+                return (True, len(fk["fieldName"]))
+    return (False, 0)
 
-def get_foreignkey_data_set(foreignTable, column_name):
-    return
+def get_foreignkey_data_set(foreign_table: str, column_name: list[str], output_folder: str):
+    pks: list[list[str]] = IOHandler.read_csv_get_primary_keys(f"{output_folder}/{foreign_table}.csv", column_name)
