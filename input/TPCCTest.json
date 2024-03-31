@@ -16,6 +16,9 @@
                 },
                 {
                     "fieldName": "age",
+<<<<<<< HEAD
+                    "type": "integer"
+=======
                     "type": "integer",
                     "isNullable": true,
                     "percentageNull": 0.1,
@@ -24,6 +27,7 @@
                         "mean": 30,
                         "stddev": 5
                     }
+>>>>>>> 1a15c0ffff3de5e39dce474fffb7ed8f3213df4a
                 },
                 {
                     "fieldName": "email",

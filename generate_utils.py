@@ -181,9 +181,10 @@ if __name__ == '__main__':
                     "type": "integer",
                     # "isUnique": True,
                     "isNullable": False,
-                    "constraints": {
-                        "min": 0,
+                    "distribution":{
+                        "type": "uniform",
+                        "min": 10,
                         "max": 100
                     }
                 }
-    print(generate_column_data(column, {"numRows": 100}, 0))
+    print(generate_column_data(column2, {"numRows": 100}, 0))
