@@ -1,14 +1,11 @@
 import math
 import os
 import pandas as pd
-<<<<<<< HEAD
 import numpy as np
 import distribution
 import text_generation
-=======
 import IOHandler
 
->>>>>>> 1a15c0ffff3de5e39dce474fffb7ed8f3213df4a
 from special_types import SpecialTypes
 import json
 CONSTRAINTS_BY_TYPE = {
@@ -72,18 +69,23 @@ def get_allowable_special_data(column, special_data):
 def generate_special_data(column, table, seed):
     if not hasattr(SpecialTypes, column['specialType']):
         raise ValueError(f"Special type {column['specialType']} not recognized")
+    
+    special_type = SpecialTypes[column['specialType']]
+    normal_type = column['type']
+    if not special_type.has_matching_normal_type(normal_type):
+        raise ValueError(f"Special type {column['specialType']} must have type {special_type.get_normal_type()}. Got {normal_type}")
 
     special_filepath = os.path.join('special_data', f"{column['specialType']}.txt")
     with open(special_filepath, 'r') as file:
         special_data = file.readlines()
-    special_data = [line.strip() for line in special_data]
+    special_data = [special_type.convert_to_normal_type(line.strip()) for line in special_data]
     
     isUnique = column.get("isUnique", False)
-    isNullable = column.get("isNullable", False)
-    print(isNullable)
+    isNullable = column.get("isNullable", True)
     percentageNull = column.get("percentageNull", 0)
     if not isNullable and percentageNull > 0:
         raise ValueError("Column is not nullable but percentageNull > 0")
+
     isRepeatable = not isUnique
     num_rows = table['numRows']
     
@@ -107,7 +109,7 @@ def generate_special_data(column, table, seed):
     return result
 
 def generate_composite_key_data(primary_keys, table, seed):
-    return
+    return []
 
 # Handles FK check
 def generate_primary_key_data(column, table, seed):
@@ -158,9 +160,9 @@ def is_foreign_key(table_schema, column_name):
                 return (True, len(fk["fieldName"]))
     return (False, 0)
 
-<<<<<<< HEAD
-def get_foreignkey_data_set(foreignTable, column_name):
-    return
+def get_foreignkey_data_set(foreign_table: str, column_name: list[str], output_folder: str):
+    pks: list[list[str]] = IOHandler.read_csv_get_primary_keys(f"{output_folder}/{foreign_table}.csv", column_name)
+
 
 if __name__ == '__main__':
     column = {
@@ -185,7 +187,3 @@ if __name__ == '__main__':
                     }
                 }
     print(generate_column_data(column, {"numRows": 100}, 0))
-=======
-def get_foreignkey_data_set(foreign_table: str, column_name: list[str], output_folder: str):
-    pks: list[list[str]] = IOHandler.read_csv_get_primary_keys(f"{output_folder}/{foreign_table}.csv", column_name)
->>>>>>> 1a15c0ffff3de5e39dce474fffb7ed8f3213df4a
