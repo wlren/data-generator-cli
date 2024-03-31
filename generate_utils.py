@@ -2,7 +2,10 @@ import math
 import os
 import pandas as pd
 import IOHandler
-
+import json
+import numpy as np
+import distribution
+import text_generation
 from special_types import SpecialTypes
 
 CONSTRAINTS_BY_TYPE = {
@@ -74,6 +77,7 @@ def generate_special_data(column, table, seed):
     
     isUnique = column.get("isUnique", False)
     isNullable = column.get("isNullable", False)
+    print(isNullable)
     percentageNull = column.get("percentageNull", 0)
     if not isNullable and percentageNull > 0:
         raise ValueError("Column is not nullable but percentageNull > 0")
@@ -116,7 +120,33 @@ def generate_primary_key_data(column, table, seed):
     return
 
 def generate_column_data(column, table, seed):
-    return
+    columnType = column["type"]
+    
+    # isUnique = column.get("isUnique", False) This is difficult, what if the user wants uniform distribution min max with unique values
+    isNullable = column.get("isNullable", False)
+    percentageNull = column.get("percentageNull", 0)
+    if not isNullable and percentageNull > 0:
+        raise ValueError("Column is not nullable but percentageNull > 0")
+    rows = table["numRows"]
+    numRowsToSample = math.floor(rows * (1 - percentageNull))
+    if is_number_type(columnType):
+        sampled_answer_row = distribution.generate_integer_distribution(column, numRowsToSample)
+    elif columnType == "text":
+        args = {}
+        if "constraints" in column:
+            args = column["constraints"]
+        sampled_answer_row = text_generation.generate_text_column(numRowsToSample, **args)
+    
+    if isNullable:
+        null_array = ["null" for i in range(rows - numRowsToSample)]
+        string_list = [str(item) for item in sampled_answer_row]
+        final_result_array = null_array + string_list
+        np.random.shuffle(final_result_array)
+        return final_result_array
+    return sampled_answer_row
+
+def is_number_type(type):
+    return type == "integer" or type == "float"
 
 def is_foreign_key(table_schema, column_name):
     if "foreign_key" in table_schema:
@@ -127,3 +157,17 @@ def is_foreign_key(table_schema, column_name):
 
 def get_foreignkey_data_set(foreign_table: str, column_name: list[str], output_folder: str):
     pks: list[list[str]] = IOHandler.read_csv_get_primary_keys(f"{output_folder}/{foreign_table}.csv", column_name)
+
+if __name__ == '__main__':
+    column = {
+                    "fieldName": "name",
+                    "type": "text",
+                    # "isUnique": True,
+                    "isNullable": True,
+                    "percentageNull": 0.2,
+                    "constraints": {
+                        "minLength": 1,
+                        "maxLength": 5
+                    }
+                }
+    print(generate_column_data(column, {"numRows": 100}, 0))
