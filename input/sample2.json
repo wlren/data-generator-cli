@@ -73,6 +73,35 @@
                     ]
                 }
             ]
+        },
+        {
+            "tableName": "Submissions",
+            "numRows": 10,
+            "columns": [
+                {
+                    "fieldName": "ip",
+                    "type": "text",
+                    "specialType": "IP_ADDRESS"
+                },
+                {
+                    "fieldName": "submission_text",
+                    "type": "text"
+                }
+            ],
+            "primary_key": [
+                "ip"
+            ],
+            "foreign_key": [
+                {
+                    "fieldName": [
+                        "submission_text"
+                    ],
+                    "tableName": "User",
+                    "references": [
+                        "random text"
+                    ]
+                }
+            ]
         }
     ]
 }

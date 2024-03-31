@@ -69,11 +69,10 @@ def enforce_distribution_field_structure(distribution_field):
     }
     dist_type = distribution_field["type"]
     constraints = constraints_map.get(dist_type, [])
-    ans = True
     for cs in constraints:
         if cs not in distribution_field:
             return False
-    return ans
+    return True
 
 
 

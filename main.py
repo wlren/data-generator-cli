@@ -39,30 +39,32 @@ def main():
             if column_name in column_data:
                 continue
 
-            #Composite PK
+            # Composite PK
             if column_name in primary_key and len(primary_key) > 1:
                 composite_pk = handle_composite_pk_data(column, table, seed, primary_key)
-            #Composite FK
+            # Composite FK
             elif gen.is_foreign_key(table, column_name)[0] and gen.is_foreign_key(table, column_name)[1] > 1:
                 composite_fk = handle_composite_fk_data(column, table, seed, foreign_keys)
-            #Single PK (+ FK if total participation)
+            # Single PK (+ FK if total participation)
             elif column_name in primary_key:
                 column_data[column_name] = gen.generate_primary_key_data(column, table, seed, output_directory_path)
-            #Single FK
+            # Single FK
             elif gen.is_foreign_key(table, column_name)[0]:
-                column_data[column_name] = gen.generate_foreign_key_data(column, table, seed)
-            #Speical type
+                column_data[column_name] = gen.generate_foreign_key_data(
+                    column, table, seed, output_directory_path
+                )
+            # Speical type
             elif 'specialType' in column:
                 column_data[column_name] = gen.generate_special_data(column, table, seed)
-            #Normal type
+            # Normal type
             else:
                 column_data[column_name] = gen.generate_column_data(column, table, seed)
 
         df = pd.DataFrame(column_data)
 
         IOHandler.writeCSV(output_directory_path, df, table_name, exclude_header)
-  
-  
+
+
 def handle_composite_pk_data(column, table, seed, primary_key):
     # Check if pk is part of fk, if so, generate entire fk and return entire fk
     primary_key_data = gen.generate_composite_key_data(primary_key, table, seed)
