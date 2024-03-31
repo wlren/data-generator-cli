@@ -1,0 +1,96 @@
+{
+    "tables": [
+        {
+            "tableName": "SpecialData",
+            "numRows": 50,
+            "columns": [
+                {
+                    "fieldName": "personEmail",
+                    "type": "text",
+                    "specialType": "PERSON_EMAIL"
+                },
+                {
+                    "fieldName": "personFirstName",
+                    "type": "text",
+                    "specialType": "PERSON_FIRST_NAME",
+                    "isNullable": true,
+                    "percentageNull": 0.5
+                },
+                {
+                    "fieldName": "personLastName",
+                    "type": "text",
+                    "specialType": "PERSON_LAST_NAME",
+                    "constraints": {
+                        "minLength": 3,
+                        "maxLength": 10
+                    }
+                },
+                {
+                    "fieldName": "personName",
+                    "type": "text",
+                    "specialType": "PERSON_NAME",
+                    "isNullable": true,
+                    "percentageNull": 0.5,
+                    "constraints": {
+                        "minLength": 100,
+                        "maxLength": 10
+                    }
+                },
+                {
+                    "fieldName": "countryID",
+                    "type": "text",
+                    "specialType": "COUNTRY_ID"
+                },
+                {
+                    "fieldName": "countryLat",
+                    "type": "float",
+                    "specialType": "COUNTRY_LAT",
+                    "constraints": {
+                        "min": -50.0,
+                        "max": 50.0
+                    }
+                },
+                {
+                    "fieldName": "countryLon",
+                    "type": "float",
+                    "specialType": "COUNTRY_LON",
+                    "constraints": {
+                        "min": -180.0,
+                        "max": 180.0
+                    }
+                },
+                {
+                    "fieldName": "countryName",
+                    "type": "text",
+                    "specialType": "COUNTRY_NAME"
+                },
+                {
+                    "fieldName": "usaStateCode",
+                    "type": "text",
+                    "specialType": "USA_STATE_CODE"
+                },
+                {
+                    "fieldName": "usaStateName",
+                    "type": "text",
+                    "specialType": "USA_STATE_NAME"
+                },
+                {
+                    "fieldName": "skills",
+                    "type": "text",
+                    "specialType": "SKILLS"
+                },
+                {
+                    "fieldName": "universities",
+                    "type": "text",
+                    "specialType": "UNIVERSITIES"
+                },
+                {
+                    "fieldName": "ipAddress",
+                    "type": "text",
+                    "specialType": "IP_ADDRESS"
+                }
+            ],
+            "primary_key": ["personEmail"]
+        }
+    ]
+}
