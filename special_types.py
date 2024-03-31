@@ -16,4 +16,17 @@ class SpecialTypes(Enum):
     IP_ADDRESS = auto()
     
     
+    def get_normal_type(self):
+        if self in [SpecialTypes.COUNTRY_LAT, SpecialTypes.COUNTRY_LON]:
+            return 'float'
+        else:
+            return 'text'
+
+    def has_matching_normal_type(self, normal_type):
+        return normal_type == self.get_normal_type()
     
+    def convert_to_normal_type(self, data):
+        if self in [SpecialTypes.COUNTRY_LAT, SpecialTypes.COUNTRY_LON]:
+            return float(data)
+        else:
+            return data

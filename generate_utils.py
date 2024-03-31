@@ -65,17 +65,23 @@ def get_allowable_special_data(column, special_data):
 def generate_special_data(column, table, seed):
     if 'specialType' in column and not hasattr(SpecialTypes, column['specialType']):
         raise ValueError(f"Special type {column['specialType']} not recognized")
+    
+    special_type = SpecialTypes[column['specialType']]
+    normal_type = column['type']
+    if not special_type.has_matching_normal_type(normal_type):
+        raise ValueError(f"Special type {column['specialType']} must have type {special_type.get_normal_type()}. Got {normal_type}")
 
     special_filepath = os.path.join('special_data', f"{column['specialType']}.txt")
     with open(special_filepath, 'r') as file:
         special_data = file.readlines()
-    special_data = [line.strip() for line in special_data]
+    special_data = [special_type.convert_to_normal_type(line.strip()) for line in special_data]
     
     isUnique = column.get("isUnique", False)
-    isNullable = column.get("isNullable", False)
+    isNullable = column.get("isNullable", True)
     percentageNull = column.get("percentageNull", 0)
     if not isNullable and percentageNull > 0:
         raise ValueError("Column is not nullable but percentageNull > 0")
+
     isRepeatable = not isUnique
     num_rows = table['numRows']
     
@@ -99,10 +105,10 @@ def generate_special_data(column, table, seed):
     return result
 
 def generate_composite_key_data(primary_keys, table, seed):
-    return
+    return []
 
 def generate_primary_key_data(column, table, seed):
-    return
+    return []
 
 def generate_column_data(column, table, seed):
     return
