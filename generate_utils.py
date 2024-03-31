@@ -2,7 +2,7 @@ import math
 import os
 import pandas as pd
 import IOHandler
-import json
+import random
 import numpy as np
 import distribution
 import text_generation
@@ -107,19 +107,34 @@ def generate_composite_key_data(primary_keys, table, seed):
     return
 
 # Handles FK check
-def generate_primary_key_data(column, table, seed):
-    is_special = 'specialType' in column
-    column.isUnique = True
-    column.isNullable = False
-    
+def generate_primary_key_data(column, table, seed, output_dir_path):
+    is_special = "specialType" in column
+    column["isUnique"] = True
+    column["isNullable"] = False
+
+    # if this PK is a FK to some other table, that means we need to use their values
+    other_table_values = []
+    if "foreign_key" in table:
+        # guaranteed to be single pk by if-else order, but just check
+        if len(table["foreign_key"]) > 1:
+            raise ValueError("Composite PK detected when trying to generate single PK as a FK!")
+        foreign_table = table["foreign_key"][0]["tableName"]
+        foreign_table_pk = table["foreign_key"][0]["references"]
+        pks = get_foreignkey_data_set(foreign_table, foreign_table_pk, output_dir_path)
+        other_table_values = pks.get(foreign_table_pk[0])
+
     if is_special:
         return generate_special_data(column, table, seed)
-    
-    
-    
+    else:
+        return generate_column_data(column, table, seed, other_table_values)
+
+
+def generate_foreign_key_data(column, table, seed):
+    # print("COL" , column)
+    # print("TABLE", table)
     return
 
-def generate_column_data(column, table, seed):
+def generate_column_data(column, table, seed, reference = None):
     columnType = column["type"]
     
     # isUnique = column.get("isUnique", False) This is difficult, what if the user wants uniform distribution min max with unique values
@@ -129,13 +144,18 @@ def generate_column_data(column, table, seed):
         raise ValueError("Column is not nullable but percentageNull > 0")
     rows = table["numRows"]
     numRowsToSample = math.floor(rows * (1 - percentageNull))
-    if is_number_type(columnType):
-        sampled_answer_row = distribution.generate_integer_distribution(column, numRowsToSample)
-    elif columnType == "text":
-        args = {}
-        if "constraints" in column:
-            args = column["constraints"]
-        sampled_answer_row = text_generation.generate_text_column(numRowsToSample, **args)
+
+    if reference:
+        # random.seed(seed)
+        sampled_answer_row = random.sample(reference, numRowsToSample)
+    else:
+        if is_number_type(columnType):
+            sampled_answer_row = distribution.generate_integer_distribution(column, numRowsToSample)
+        elif columnType == "text":
+            args = {}
+            if "constraints" in column:
+                args = column["constraints"]
+            sampled_answer_row = text_generation.generate_text_column(numRowsToSample, **args)
     
     if isNullable:
         null_array = ["null" for i in range(rows - numRowsToSample)]
@@ -143,6 +163,7 @@ def generate_column_data(column, table, seed):
         final_result_array = null_array + string_list
         np.random.shuffle(final_result_array)
         return final_result_array
+    
     return sampled_answer_row
 
 def is_number_type(type):
@@ -155,19 +176,32 @@ def is_foreign_key(table_schema, column_name):
                 return (True, len(fk["fieldName"]))
     return (False, 0)
 
-def get_foreignkey_data_set(foreign_table: str, column_name: list[str], output_folder: str):
-    pks: list[list[str]] = IOHandler.read_csv_get_primary_keys(f"{output_folder}/{foreign_table}.csv", column_name)
 
-if __name__ == '__main__':
-    column = {
-                    "fieldName": "name",
-                    "type": "text",
-                    # "isUnique": True,
-                    "isNullable": True,
-                    "percentageNull": 0.2,
-                    "constraints": {
-                        "minLength": 1,
-                        "maxLength": 5
-                    }
-                }
-    print(generate_column_data(column, {"numRows": 100}, 0))
+def get_foreignkey_data_set(
+    foreign_table: str, column_name: list[str], output_folder: str
+):
+    pks: list[list[str]] = IOHandler.read_csv_get_primary_keys(
+        f"{output_folder}/{foreign_table}.csv", column_name
+    )
+    res = {}
+    if (len(pks) != len(column_name)):
+        raise ValueError("Error when reading PK values from csvs!")
+    for i in range(len(column_name)):
+        name, pk = column_name[i], pks[i]
+        res[name] = pk
+    return res
+
+
+# if __name__ == '__main__':
+#     column = {
+#                     "fieldName": "name",
+#                     "type": "text",
+#                     # "isUnique": True,
+#                     "isNullable": True,
+#                     "percentageNull": 0.2,
+#                     "constraints": {
+#                         "minLength": 1,
+#                         "maxLength": 5
+#                     }
+#                 }
+#     print(generate_column_data(column, {"numRows": 100}, 0))

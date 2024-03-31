@@ -31,13 +31,14 @@ def main():
 
         column_data = {}
         primary_key = table["primary_key"]
-        foreign_keys = table["foreign_keys"]
+        foreign_keys = table.get("foreign_keys", [])
 
         # Single key
         for column in table["columns"]:
             column_name = column["fieldName"]
             if column_name in column_data:
                 continue
+
             #Composite PK
             if column_name in primary_key and len(primary_key) > 1:
                 composite_pk = handle_composite_pk_data(column, table, seed, primary_key)
@@ -46,7 +47,7 @@ def main():
                 composite_fk = handle_composite_fk_data(column, table, seed, foreign_keys)
             #Single PK (+ FK if total participation)
             elif column_name in primary_key:
-                column_data[column_name] = gen.generate_primary_key_data(column, table, seed)
+                column_data[column_name] = gen.generate_primary_key_data(column, table, seed, output_directory_path)
             #Single FK
             elif gen.is_foreign_key(table, column_name)[0]:
                 column_data[column_name] = gen.generate_foreign_key_data(column, table, seed)

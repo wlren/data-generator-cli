@@ -1,0 +1,78 @@
+{
+    "tables": [
+        {
+            "tableName": "User",
+            "numRows": 100,
+            "columns": [
+                {
+                    "fieldName": "name",
+                    "type": "text",
+                    "specialType": "PERSON_NAME",
+                    "isUnique": true,
+                    "constraints": {
+                        "minLength": 1,
+                        "maxLength": 5
+                    }
+                },
+                {
+                    "fieldName": "age",
+                    "type": "integer",
+                    "isNullable": true,
+                    "percentageNull": 0.1,
+                    "distribution": {
+                        "type": "normal",
+                        "mean": 30,
+                        "stddev": 5
+                    }
+                },
+                {
+                    "fieldName": "email",
+                    "type": "text",
+                    "specialType": "PERSON_EMAIL"
+                },
+                {
+                    "fieldName": "random text",
+                    "type": "text",
+                    "isNullable": true,
+                    "percentageNullable": 0.2,
+                    "constraints": {
+                        "minLength": 1,
+                        "maxLength": 5
+                    }
+                }
+            ],
+            "primary_key": [
+                "name"
+            ]
+        },
+        {
+            "tableName": "School",
+            "numRows": 10,
+            "columns": [
+                {
+                    "fieldName": "name",
+                    "type": "text"
+                },
+                {
+                    "fieldName": "uni",
+                    "type": "text",
+                    "specialType": "UNIVERSITIES"
+                }
+            ],
+            "primary_key": [
+                "name"
+            ],
+            "foreign_key": [
+                {
+                    "fieldName": [
+                        "name"
+                    ],
+                    "tableName": "User",
+                    "references": [
+                        "name"
+                    ]
+                }
+            ]
+        }
+    ]
+}
