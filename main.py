@@ -3,21 +3,18 @@ import pandas as pd
 from toposort import topological_sort
 import IOHandler
 import generate_utils as gen
-# SpecialTypes.PERSON_EMAIL.name for string representation
 
 def init_generator():
-    # Parse command line arguments
     args = IOHandler.get_parser().parse_args()
     print(f"Processing file: {args.input_file_path} with seed {args.seed}")
-
-    # Parse input json file
+    
     generator_json_data = IOHandler.get_json_data(args.input_file_path)
     
     return generator_json_data, args
 
 def main():
     generator_json_data, args = init_generator()
-    seed, output_directory_path, exclude_header = args.seed, args.output_directory_path, args.exclude_header
+    seed, output_directory_path = args.seed, args.output_directory_path
 
     tables = generator_json_data["tables"]
     table_order = topological_sort(generator_json_data)
@@ -59,7 +56,7 @@ def main():
 
         df = pd.DataFrame(column_data)
 
-        IOHandler.writeCSV(output_directory_path, df, table_name, exclude_header)
+        IOHandler.writeCSV(output_directory_path, df, table_name)
   
   
 def handle_composite_pk_data(column, table, seed, primary_key):
