@@ -21,8 +21,9 @@ def generate_random_string(min_length, max_length):
     random_string = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
 
     return random_string
-def generate_text_column(size, minLength=DEFAULT_MIN_LENGTH, maxLength=DEFAULT_MAX_LENGTH):
+def generate_text_column(size, seed, minLength=DEFAULT_MIN_LENGTH, maxLength=DEFAULT_MAX_LENGTH):
     ans = []
+    random.seed(seed)
     for i in range(size):
         ans.append(generate_random_string(minLength, maxLength))
     return ans

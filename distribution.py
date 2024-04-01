@@ -69,12 +69,13 @@ def enforce_distribution_field_structure(distribution_field):
 def is_number_type(type):
     return type == "integer" or type == "float"
 
-def generate_number_column(column, rows):
+def generate_number_column(column, rows, seed):
     if not is_number_type(type=column["type"]):
         raise TypeError("Invalid column type")
     distribution_field = {}
     constraints = column.get("constraints", {})
-
+    #Set the seed for np
+    np.random.seed(seed=seed)
     if "distribution" in column:
         distribution_field = column.get("distribution", {})
         is_valid = enforce_distribution_field_structure(distribution_field)
@@ -101,4 +102,4 @@ if __name__ == '__main__':
         }
     }
 
-    print(generate_number_column(test, 10))
+    # print(generate_number_column(test, 10))

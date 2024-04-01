@@ -134,18 +134,20 @@ def generate_column_data(column, table, seed):
     
     rows = table["numRows"]
     numRowsToSample = math.floor(rows * (1 - percentageNull))
+
     if is_number_type(columnType):
-        sampled_answer_row = distribution.generate_number_column(column, numRowsToSample)
+        sampled_answer_row = distribution.generate_number_column(column, numRowsToSample, seed)
     elif columnType == "text":
         args = {}
         if "constraints" in column:
             args = column["constraints"]
-        sampled_answer_row = text_generation.generate_text_column(numRowsToSample, **args)
+        sampled_answer_row = text_generation.generate_text_column(numRowsToSample,seed, **args)
     
     if isNullable:
         null_array = ["null" for i in range(rows - numRowsToSample)]
         string_list = [str(item) for item in sampled_answer_row]
         final_result_array = null_array + string_list
+        np.random.seed(seed)
         np.random.shuffle(final_result_array)
         return final_result_array
     return sampled_answer_row
