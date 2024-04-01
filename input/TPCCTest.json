@@ -1,91 +1,33 @@
 {
     "tables": [
         {
-            "tableName": "User",
-            "numRows": 100,
-            "columns": [
-                {
-                    "fieldName": "name",
-                    "type": "text",
-                    "specialType": "PERSON_NAME",
-                    "isUnique": true,
-                    "constraints": {
-                        "minLength": 1,
-                        "maxLength": 5
-                    }
-                },
-                {
-                    "fieldName": "age",
-<<<<<<< HEAD
-                    "type": "integer"
-=======
-                    "type": "integer",
-                    "isNullable": true,
-                    "percentageNull": 0.1,
-                    "distribution": {
-                        "type": "normal",
-                        "mean": 30,
-                        "stddev": 5
-                    }
->>>>>>> 1a15c0ffff3de5e39dce474fffb7ed8f3213df4a
-                },
-                {
-                    "fieldName": "email",
-                    "type": "text",
-                    "specialType": "PERSON_EMAIL"
-                },
-                {
-                    "fieldName": "random text",
-                    "type": "text",
-                    "isNullable": true,
-                    "percentageNullable": 0.2,
-                    "constraints": {
-                        "minLength": 1,
-                        "maxLength": 5
-                    }
-                }
-            ],
-            "primary_key": [
-                "name",
-                "email"
-            ]
-        },
-        {
-            "tableName": "FriendsList",
+            "tableName": "Warehouses",
             "numRows": 10,
             "columns": [
                 {
-                    "fieldName": "friend1",
+                    "fieldName": "w_id",
+                    "type": "integer",
+                    "isUnique": true
+                },
+                {
+                    "fieldName": "w_name",
                     "type": "text"
                 },
                 {
-                    "fieldName": "friend2",
+                    "fieldName": "w_street",
+                    "type": "text"
+                },
+                {
+                    "fieldName": "w_city",
+                    "type": "text"
+                },
+                {
+                    "fieldName": "w_country",
                     "type": "text"
                 }
             ],
             "primary_key": [
-                "friend1",
-                "friend2"
-            ],
-            "foreign_key": [
-                {
-                    "fieldName": [
-                        "friend1"
-                    ],
-                    "tableName": "User",
-                    "references": [
-                        "name"
-                    ]
-                },
-                {
-                    "fieldName": [
-                        "friend2"
-                    ],
-                    "tableName": "User",
-                    "references": [
-                        "name"
-                    ]
-                }
+                "w_id"
             ]
         }
     ]

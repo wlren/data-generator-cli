@@ -1,0 +1,84 @@
+{
+    "tables": [
+        {
+            "tableName": "NormalColumns",
+            "numRows": 50,
+            "columns": [
+                {
+                    "fieldName": "personEmail",
+                    "type": "text"
+                },
+                {
+                    "fieldName": "personFirstName",
+                    "type": "text",
+                    "isNullable": true,
+                    "percentageNull": 0.5
+                },
+                {
+                    "fieldName": "personLastName",
+                    "type": "text",
+                    "constraints": {
+                        "minLength": 3,
+                        "maxLength": 10
+                    }
+                },
+                {
+                    "fieldName": "personName",
+                    "type": "text",
+                    "isNullable": true,
+                    "percentageNull": 0.5,
+                    "constraints": {
+                        "minLength": 100,
+                        "maxLength": 10
+                    }
+                },
+                {
+                    "fieldName": "countryLat",
+                    "type": "float",
+                    "specialType": "COUNTRY_LAT",
+                    "distribution": {
+                        "type": "uniform",
+                        "min": -50.0,
+                        "max": 50.0
+                    }
+                },
+                {
+                    "fieldName": "countryLon",
+                    "type": "float",
+                    "specialType": "COUNTRY_LON",
+                    "distribution": {
+                        "type": "uniform",
+                        "min": -180.0,
+                        "max": 180.0
+                    }
+                },
+                {
+                    "fieldName": "usaStateCode",
+                    "type": "integer"
+                },
+                {
+                    "fieldName": "usaStateCode",
+                    "type": "integer"
+                },
+                {
+                    "fieldName": "skills",
+                    "type": "text",
+                    "specialType": "SKILLS"
+                },
+                {
+                    "fieldName": "universities",
+                    "type": "text",
+                    "specialType": "UNIVERSITIES"
+                },
+                {
+                    "fieldName": "ipAddress",
+                    "type": "text",
+                    "specialType": "IP_ADDRESS"
+                }
+            ],
+            "primary_key": [
+                "personEmail"
+            ]
+        }
+    ]
+}

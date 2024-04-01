@@ -30,9 +30,12 @@ def main():
                 break
 
         column_data = {}
-        primary_key = table["primary_key"]
-        foreign_keys = table["foreign_keys"]
-
+        print(table)
+        if "primary_key" in table:
+            primary_key = table["primary_key"] 
+        if "foreign_keys" in table:
+            foreign_keys = table["foreign_keys"]
+        
         # Single key
         for column in table["columns"]:
             column_name = column["fieldName"]

@@ -126,12 +126,12 @@ def generate_primary_key_data(column, table, seed):
 
 def generate_column_data(column, table, seed):
     columnType = column["type"]
-    
-    # isUnique = column.get("isUnique", False) This is difficult, what if the user wants uniform distribution min max with unique values
-    isNullable = column.get("isNullable", False)
+    isNullable = column.get("isNullable", True)
     percentageNull = column.get("percentageNull", 0)
+
     if not isNullable and percentageNull > 0:
         raise ValueError("Column is not nullable but percentageNull > 0")
+    
     rows = table["numRows"]
     numRowsToSample = math.floor(rows * (1 - percentageNull))
     if is_number_type(columnType):
