@@ -32,8 +32,8 @@
                     "isNullable": true,
                     "percentageNull": 0.5,
                     "constraints": {
-                        "minLength": 100,
-                        "maxLength": 10
+                        "minLength": 10,
+                        "maxLength": 100
                     }
                 },
                 {
@@ -90,7 +90,9 @@
                     "specialType": "IP_ADDRESS"
                 }
             ],
-            "primary_key": ["personEmail"]
+            "primary_key": [
+                "personEmail"
+            ]
         }
     ]
 }

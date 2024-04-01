@@ -135,7 +135,7 @@ def generate_column_data(column, table, seed):
     rows = table["numRows"]
     numRowsToSample = math.floor(rows * (1 - percentageNull))
     if is_number_type(columnType):
-        sampled_answer_row = distribution.generate_integer_distribution(column, numRowsToSample)
+        sampled_answer_row = distribution.generate_number_column(column, numRowsToSample)
     elif columnType == "text":
         args = {}
         if "constraints" in column:

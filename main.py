@@ -12,7 +12,6 @@ def init_generator():
 
     # Parse input json file
     generator_json_data = IOHandler.get_json_data(args.input_file_path)
-    
     return generator_json_data, args
 
 def main():
@@ -31,6 +30,8 @@ def main():
 
         column_data = {}
         print(table)
+        primary_key = []
+        foreign_keys = []
         if "primary_key" in table:
             primary_key = table["primary_key"] 
         if "foreign_keys" in table:

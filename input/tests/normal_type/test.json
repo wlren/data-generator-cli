@@ -28,8 +28,8 @@
                     "isNullable": true,
                     "percentageNull": 0.5,
                     "constraints": {
-                        "minLength": 100,
-                        "maxLength": 10
+                        "minLength": 10,
+                        "maxLength": 100
                     }
                 },
                 {
@@ -54,30 +54,54 @@
                 },
                 {
                     "fieldName": "usaStateCode",
-                    "type": "integer"
+                    "type": "integer",
+                    "distribution": {
+                        "type": "uniform",
+                        "min": 0,
+                        "max": 1000
+                    }
                 },
                 {
-                    "fieldName": "usaStateCode",
-                    "type": "integer"
+                    "fieldName": "phone code",
+                    "type": "integer",
+                    "distribution": {
+                        "type": "normal",
+                        "mean": 70,
+                        "stddev": 50
+                    }
                 },
                 {
-                    "fieldName": "skills",
-                    "type": "text",
-                    "specialType": "SKILLS"
+                    "fieldName": "experiment",
+                    "type": "float",
+                    "distribution": {
+                        "type": "normal",
+                        "mean": 700,
+                        "stddev": 200
+                    },
+                    "decimal_point": 2
                 },
                 {
-                    "fieldName": "universities",
-                    "type": "text",
-                    "specialType": "UNIVERSITIES"
+                    "fieldName": "experimentPhysics",
+                    "type": "float",
+                    "distribution": {
+                        "type": "uniform",
+                        "min": 700,
+                        "max": 20000
+                    },
+                    "decimal_point": 3
                 },
                 {
-                    "fieldName": "ipAddress",
-                    "type": "text",
-                    "specialType": "IP_ADDRESS"
+                    "fieldName": "experimentPhysicsError",
+                    "type": "float",
+                    "isNullable": true,
+                    "percentageNull": 0.7,
+                    "distribution": {
+                        "type": "uniform",
+                        "min": 700,
+                        "max": 20000
+                    },
+                    "decimal_point": 3
                 }
-            ],
-            "primary_key": [
-                "personEmail"
             ]
         }
     ]

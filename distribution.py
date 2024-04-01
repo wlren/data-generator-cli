@@ -1,65 +1,60 @@
 import numpy as np
 import math
-import matplotlib.pyplot as plt
-MAX_NUMBER = 100000000
-MIN_NUMBER = 0
+
+
 def generate_normal_distribution(mean, stddev, rows):
     data = np.random.normal(mean, stddev, size=rows)
     return list(data)
-def generate_uniform_integer_distribution(min, max, rows):
-    ans = []
-    for i in range(rows):
-         rand_int = np.random.randint(low=min, high=max)
-         ans.append(rand_int)
-    return ans
-def generate_uniform_decimal_distribution(min, max, rows):
-    ans = np.random.uniform(low=min, high=max, size = rows)
-    return list(ans)
-def generate_random_numbers(type, size):
-    if type == "integer":
-        return np.random.randint(MIN_NUMBER, MAX_NUMBER, size=size)
-    else:
-        return generate_uniform_decimal_distribution(MIN_NUMBER, MAX_NUMBER, size)
-    
+class IntegerColumn:
+    DEFAULT_MIN_VALUE = -100000000
+    DEFAULT_MAX_VALUE = 1000000000
+    def __init__(self, distribution_field, min_value, max_value):
+        self.distribution_field = distribution_field
+        self.min_value = min_value
+        self.max_value = max_value
 
-def generate_integer_distribution(column, rows):
-    # Generate integer column with the specified number of rows
-    number_type = ["integer", "float"]
-    # Given an integer / decimal type column output a list of integer with the specified constraints of the column
-    if column["type"] not in number_type:
-        raise TypeError("Not of integer type")
-    
-    if "distribution" in column:
-        distribution_field = column["distribution"]
-        isValidNumberDistribution = enforce_distribution_field_structure(distribution_field=distribution_field)
-        if not isValidNumberDistribution:
-            raise TypeError("Wrong distribution structure")
-        number_type = column["type"]
-        distribution_type = distribution_field["type"]
-        if distribution_type == "normal":
-            mean = distribution_field.get("mean")
-            stddev = distribution_field.get("stddev")
-            if number_type == "float":
-                return generate_normal_distribution(mean, stddev, rows)
-            else:
-                nd = list(generate_normal_distribution(mean, stddev, rows))
-                int_normal = list(map(lambda x: math.floor(x), nd))
-                return int_normal
-        elif distribution_type == "uniform":
-            min = distribution_field.get("min")
-            max = distribution_field.get("max")
-            if number_type == "float": 
-                return generate_uniform_decimal_distribution(min, max, rows)
-            elif number_type == "integer":
-                return generate_uniform_integer_distribution(min, max, rows)
+    def generate_data(self, rows):
+        distribution_type = self.distribution_field.get("type", "default")
+        if distribution_type == "uniform":
+            min = self.distribution_field["min"]
+            max = self.distribution_field["max"]
+            return np.random.randint(low=min, high=max, size=rows)
+        elif distribution_type == "normal":
+            mean = self.distribution_field["mean"]
+            stddev = self.distribution_field["stddev"]
+            data = generate_normal_distribution(mean, stddev, rows)
+            return [int(x) for x in data]
         else:
-            return []
-    else:
-        type = column["type"]
-        return generate_random_numbers(type, rows)
-        
+            return np.random.randint(low=self.min_value, high=self.max_value + 1, size=rows)
 
-        
+
+
+class FloatColumn:
+    DEFAULT_MIN_VALUE = -100000000
+    DEFAULT_MAX_VALUE = 1000000000
+    DEFAULT_DECIMAL_POINT = 2
+    def __init__(self, distribution_field, min_value, max_value, decimal_point=DEFAULT_DECIMAL_POINT):
+        self.distribution_field = distribution_field
+        self.min_value = min_value
+        self.max_value = max_value
+        self.decimal_point = decimal_point
+
+    def generate_data(self, rows):
+        distribution_type = self.distribution_field.get("type", "default")
+        data = []
+        if distribution_type == "uniform":
+            min = self.distribution_field["min"]
+            max = self.distribution_field["max"]
+            data = np.random.uniform(low=min, high=max, size=rows)
+        elif distribution_type == "normal":
+            mean = self.distribution_field["mean"]
+            stddev = self.distribution_field["stddev"]
+            data = generate_normal_distribution(mean, stddev, rows)
+        else:
+            data = np.random.uniform(low=self.DEFAULT_MIN_VALUE, high=self.DEFAULT_MAX_VALUE, size=rows)
+        data = np.around(data, decimals=self.decimal_point)
+        return data
+
 
 def enforce_distribution_field_structure(distribution_field):
     constraints_map = {
@@ -69,22 +64,41 @@ def enforce_distribution_field_structure(distribution_field):
     }
     dist_type = distribution_field["type"]
     constraints = constraints_map.get(dist_type, [])
-    ans = True
-    for cs in constraints:
-        if cs not in distribution_field:
-            return False
-    return ans
+    return all(cs in distribution_field for cs in constraints)
 
+def is_number_type(type):
+    return type == "integer" or type == "float"
 
+def generate_number_column(column, rows):
+    if not is_number_type(type=column["type"]):
+        raise TypeError("Invalid column type")
+    distribution_field = {}
+    constraints = column.get("constraints", {})
 
+    if "distribution" in column:
+        distribution_field = column.get("distribution", {})
+        is_valid = enforce_distribution_field_structure(distribution_field)
+        if not is_valid:
+            raise SyntaxError("Wrong syntax for distribution")
 
+    if column["type"] == "integer":
+        return IntegerColumn(distribution_field, constraints.get("min", IntegerColumn.DEFAULT_MIN_VALUE), distribution_field.get("max", IntegerColumn.DEFAULT_MAX_VALUE)).generate_data(rows)
+    elif column["type"] == "float":
+        dp = column.get("decimal_point", FloatColumn.DEFAULT_DECIMAL_POINT)
+        return FloatColumn(distribution_field, constraints.get("min", FloatColumn.DEFAULT_MIN_VALUE), distribution_field.get("max", FloatColumn.DEFAULT_MAX_VALUE), dp).generate_data(rows)
+    else:
+        raise TypeError("Invalid number type: only float / integer")
+        
 
 if __name__ == '__main__':
     test = {
-         "fieldName": "age",
-         "type": "float",
-       }
+        "fieldName": "age",
+        "type": "float",
+        "distribution": {
+            "type": "uniform",
+            "min": 10,
+            "max": 20
+        }
+    }
 
-    print(generate_integer_distribution(test, 500))
-    # List of unsorted numbers
-    data = generate_integer_distribution(test,500)
+    print(generate_number_column(test, 10))
