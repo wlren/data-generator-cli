@@ -87,7 +87,7 @@ def generate_column_data(
     column,
     table,
     seed,
-    fk_table_name: str = None,
+    fk_col_name: str = None,
     reference = None,
 ):
     columnType = column["type"]
@@ -103,9 +103,9 @@ def generate_column_data(
         random.seed(seed)
         # kind of hackish edge case, but eg if we ref column X which only has x rows,
         # and if our curr column Y has y rows st y > x, we have to make sure our arr to sample from is long enough
-        reference_extended = reference[fk_table_name]
+        reference_extended = reference[fk_col_name]
         while numRowsToSample > len(reference_extended):
-            reference_extended += reference[fk_table_name]
+            reference_extended += reference[fk_col_name]
         sampled_answer_row = random.sample(reference_extended, numRowsToSample)
     else:
         if is_number_type(columnType):
@@ -127,7 +127,7 @@ def generate_column_data(
 
 
 def generate_special_data(
-    column, table, seed, fk_table_name: str = None, reference = None
+    column, table, seed, fk_col_name: str = None, reference = None
 ):
     if not hasattr(SpecialTypes, column['specialType']):
         raise ValueError(f"Special type {column['specialType']} not recognized")
@@ -157,9 +157,9 @@ def generate_special_data(
 
     if reference:
         random.seed(seed)
-        reference_extended = reference[fk_table_name]
+        reference_extended = reference[fk_col_name]
         while numRowsToSample > len(reference):
-            reference_extended += reference[fk_table_name]
+            reference_extended += reference[fk_col_name]
         sampled_data = random.sample(reference_extended, numRowsToSample)
     else:
         special_filepath = os.path.join('special_data', f"{column['specialType']}.txt")
@@ -233,8 +233,8 @@ def generate_primary_key_data(column, table, seed, output_dir_path):
 
 def generate_foreign_key_data(column, table, seed, output_dir_path, fk_object):
     is_special = "specialType" in column
-    column["isUnique"] = False
-    column["isNullable"] = True
+    fk_object["isUnique"] = False
+    fk_object["isNullable"] = True
 
     other_table_values = get_foreignkey_data_set(
         fk_object["tableName"], fk_object["references"], output_dir_path
