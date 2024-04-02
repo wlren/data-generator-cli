@@ -15,7 +15,6 @@ class SpecialTypes(Enum):
     UNIVERSITIES = auto()
     IP_ADDRESS = auto()
     
-    
     def get_normal_type(self):
         if self in [SpecialTypes.COUNTRY_LAT, SpecialTypes.COUNTRY_LON]:
             return 'float'
