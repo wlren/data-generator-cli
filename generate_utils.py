@@ -91,7 +91,7 @@ def generate_column_data(column, table, seed, reference=None):
     numRowsToSample = math.floor(rows * (1 - percentageNull))
 
     if reference:
-        random.seed(seed)
+        # random.seed(seed)
         # kind of hackish edge case, but eg if we ref column X which only has x rows,
         # and if our curr column Y has y rows st y > x, we have to make sure our arr to sample from is long enough
         reference_extended = reference
@@ -101,12 +101,12 @@ def generate_column_data(column, table, seed, reference=None):
     else:
         # TODO: This should use seed to generate
         if is_number_type(columnType):
-            sampled_answer_row = distribution.generate_number_column(column, numRowsToSample, seed)
+            sampled_answer_row = distribution.generate_number_column(column, numRowsToSample)
         elif columnType == "text":
             args = {}
             if "constraints" in column:
                 args = column["constraints"]
-            sampled_answer_row = text_generation.generate_text_column(column, numRowsToSample, seed, **args)
+            sampled_answer_row = text_generation.generate_text_column(column, numRowsToSample, **args)
         elif columnType == "boolean":
             sampled_answer_row = generate_boolean_column(column, numRowsToSample, seed)
         else:
@@ -116,14 +116,13 @@ def generate_column_data(column, table, seed, reference=None):
         null_array = ["null" for i in range(rows - numRowsToSample)]
         string_list = [str(item) for item in sampled_answer_row]
         final_result_array = null_array + string_list
-        np.random.seed(seed)
         np.random.shuffle(final_result_array)
         return final_result_array
 
     return sampled_answer_row
 
 def generate_boolean_column(column, numRowsToSample, seed):
-    np.random.seed(seed)
+    # np.random.seed(seed)
     isUnique = column.get("isUnique", False)
     possibleValues = [True, False]
     numPossibleValues = len(possibleValues)
@@ -159,7 +158,7 @@ def generate_special_data(column, table, seed, reference=None):
     nullRowIndexes = set(pd.Series(range(num_rows)).sample(n=numNullRows, random_state=seed, replace=False).tolist())
     
     if reference:
-        random.seed(seed)
+        # random.seed(seed)
         reference_extended = reference
         while numRowsToSample > len(reference):
             reference_extended += reference
@@ -251,7 +250,7 @@ def generate_composite_fkey_data(fks, table, seed, output_folder, isUnique=False
     # A[p_a, p_b] 100
     
     foreign_table_data = get_foreignkey_data_set(foreign_table, references, output_folder)
-    random.seed(seed)
+    # random.seed(seed)
     added = set()
     result = { fieldNames[i]: [] for i in range(len(fieldNames)) }
     for i in range(num_rows):

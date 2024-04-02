@@ -22,12 +22,10 @@ def generate_random_string(min_length, max_length):
 
     return random_string
 
-def generate_text_column(column, rows, seed, minLength=DEFAULT_MIN_LENGTH, maxLength=DEFAULT_MAX_LENGTH):
+def generate_text_column(column, rows, minLength=DEFAULT_MIN_LENGTH, maxLength=DEFAULT_MAX_LENGTH):
     isUnique = column.get("isUnique", False)
     if isUnique and not has_enough_unique_strings(minLength, maxLength, rows):
         raise TypeError(f"Number of row to be generated is less than the possible values rows: {rows} length = {maxLength - minLength}")
-    
-    random.seed(seed)
 
     if isUnique:
         ans = set()

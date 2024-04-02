@@ -1,7 +1,7 @@
 {
     "tables": [
         {
-            "tableName": "NormalColumnsComparison",
+            "tableName": "NormalColumnsOriginal",
             "numRows": 101,
             "columns": [
                 {
