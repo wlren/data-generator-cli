@@ -65,14 +65,22 @@
             ],
             "foreign_key": [
                 {
-                    "fieldName": ["friend1"],
+                    "fieldName": [
+                        "friend1"
+                    ],
                     "tableName": "User",
-                    "references": ["name"]
+                    "references": [
+                        "name"
+                    ]
                 },
                 {
-                    "fieldName": ["friend2"],
+                    "fieldName": [
+                        "friend2"
+                    ],
                     "tableName": "User",
-                    "references": ["name"]
+                    "references": [
+                        "name"
+                    ]
                 }
             ]
         }

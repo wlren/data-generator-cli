@@ -1,0 +1,164 @@
+{
+    "tables": [
+        {
+            "tableName": "NormalColumnsOriginal",
+            "numRows": 101,
+            "columns": [
+                {
+                    "fieldName": "personEmail",
+                    "type": "text"
+                },
+                {
+                    "fieldName": "emptyStringGeneration",
+                    "type": "text",
+                    "constraints": {
+                        "minLength": 0,
+                        "maxLength": 2
+                    }
+                },
+                {
+                    "fieldName": "personFirstName",
+                    "type": "text",
+                    "isNullable": true,
+                    "percentageNull": 0.5
+                },
+                {
+                    "fieldName": "personLastName",
+                    "type": "text",
+                    "constraints": {
+                        "minLength": 1,
+                        "maxLength": 3
+                    }
+                },
+                {
+                    "fieldName": "personName",
+                    "type": "text",
+                    "isNullable": true,
+                    "percentageNull": 0.5,
+                    "constraints": {
+                        "minLength": 10,
+                        "maxLength": 100
+                    }
+                },
+                {
+                    "fieldName": "countryLat",
+                    "type": "float",
+                    "distribution": {
+                        "type": "uniform",
+                        "min": -50.0,
+                        "max": 50.0
+                    }
+                },
+                {
+                    "fieldName": "countryLon",
+                    "type": "float",
+                    "distribution": {
+                        "type": "uniform",
+                        "min": -180.0,
+                        "max": 180.0
+                    }
+                },
+                {
+                    "fieldName": "usaStateCode",
+                    "type": "integer",
+                    "distribution": {
+                        "type": "uniform",
+                        "min": 0,
+                        "max": 1000
+                    }
+                },
+                {
+                    "fieldName": "phone code",
+                    "type": "integer",
+                    "distribution": {
+                        "type": "normal",
+                        "mean": 70,
+                        "stddev": 50
+                    }
+                },
+                {
+                    "fieldName": "experiment",
+                    "type": "float",
+                    "distribution": {
+                        "type": "normal",
+                        "mean": 700,
+                        "stddev": 200
+                    },
+                    "decimal_point": 2
+                },
+                {
+                    "fieldName": "experimentPhysics",
+                    "type": "float",
+                    "distribution": {
+                        "type": "uniform",
+                        "min": 700,
+                        "max": 20000
+                    },
+                    "decimal_point": 3
+                },
+                {
+                    "fieldName": "experimentPhysicsError",
+                    "type": "float",
+                    "isNullable": true,
+                    "percentageNull": 0.7,
+                    "distribution": {
+                        "type": "uniform",
+                        "min": 700,
+                        "max": 20000
+                    },
+                    "decimal_point": 3
+                },
+                {
+                    "fieldName": "uniqueTextColumn",
+                    "type": "text",
+                    "isUnique": true
+                },
+                {
+                    "fieldName": "uniqueIntegerColumn",
+                    "type": "integer",
+                    "isUnique": true
+                },
+                {
+                    "fieldName": "uniqueFloatColumn",
+                    "type": "float",
+                    "isUnique": true,
+                    "decimal_point": 2,
+                    "constraints": {
+                        "min": 0,
+                        "max": 1
+                    }
+                },
+                {
+                    "fieldName": "uniqueIntegerColumnLowRange",
+                    "type": "integer",
+                    "isUnique": true,
+                    "constraints": {
+                        "min": 0,
+                        "max": 100
+                    }
+                },
+                {
+                    "fieldName": "boolNullable",
+                    "type": "boolean",
+                    "isNullable": true,
+                    "percentageNull": 0.5
+                },
+                {
+                    "fieldName": "boolNonNullable",
+                    "type": "boolean",
+                    "isNullable": false
+                },
+                {
+                    "fieldName": "boolUniqueNullable",
+                    "type": "boolean",
+                    "isUnique": true,
+                    "isNullable": true,
+                    "percentageNull": 0.99
+                }
+            ],
+            "primary_key": [
+                "personLastName"
+            ]
+        }
+    ]
+}

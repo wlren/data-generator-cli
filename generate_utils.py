@@ -19,7 +19,7 @@ CONSTRAINTS_BY_TYPE = {
     'boolean': set([])
 }
 
-NUMERIC_TYPES = ['int', 'float', 'date']
+NUMERIC_TYPES = ['int', 'float']
 
 def is_number_type(type):
     return type == "integer" or type == "float"
@@ -91,7 +91,7 @@ def generate_column_data(column, table, seed, reference=None):
     numRowsToSample = math.floor(rows * (1 - percentageNull))
 
     if reference:
-        random.seed(seed)
+        # random.seed(seed)
         # kind of hackish edge case, but eg if we ref column X which only has x rows,
         # and if our curr column Y has y rows st y > x, we have to make sure our arr to sample from is long enough
         reference_extended = reference
@@ -101,12 +101,16 @@ def generate_column_data(column, table, seed, reference=None):
     else:
         # TODO: This should use seed to generate
         if is_number_type(columnType):
-            sampled_answer_row = distribution.generate_integer_distribution(column, numRowsToSample)
+            sampled_answer_row = distribution.generate_number_column(column, numRowsToSample)
         elif columnType == "text":
             args = {}
             if "constraints" in column:
                 args = column["constraints"]
-            sampled_answer_row = text_generation.generate_text_column(numRowsToSample, **args)
+            sampled_answer_row = text_generation.generate_text_column(column, numRowsToSample, **args)
+        elif columnType == "boolean":
+            sampled_answer_row = generate_boolean_column(column, numRowsToSample, seed)
+        else:
+            raise ValueError(f"Column type {columnType} not recognized")
 
     if isNullable:
         null_array = ["null" for i in range(rows - numRowsToSample)]
@@ -117,6 +121,15 @@ def generate_column_data(column, table, seed, reference=None):
 
     return sampled_answer_row
 
+def generate_boolean_column(column, numRowsToSample, seed):
+    # np.random.seed(seed)
+    isUnique = column.get("isUnique", False)
+    possibleValues = [True, False]
+    numPossibleValues = len(possibleValues)
+    if isUnique and numRowsToSample > numPossibleValues:
+        raise ValueError(f"column {column['fieldName']} has more rows than possible values for boolean type")
+    return np.random.choice(possibleValues, numRowsToSample, replace=not isUnique)
+
 def generate_special_data(column, table, seed, reference=None):
     if not hasattr(SpecialTypes, column['specialType']):
         raise ValueError(f"Special type {column['specialType']} not recognized")
@@ -126,11 +139,6 @@ def generate_special_data(column, table, seed, reference=None):
     if not special_type.has_matching_normal_type(normal_type):
         raise ValueError(f"Special type {column['specialType']} must have type {special_type.get_normal_type()}. Got {normal_type}")
 
-    special_filepath = os.path.join('special_data', f"{column['specialType']}.txt")
-    with open(special_filepath, 'r') as file:
-        special_data = file.readlines()
-    special_data = [special_type.convert_to_normal_type(line.strip()) for line in special_data]
-    
     isUnique = column.get("isUnique", False)
     isNullable = column.get("isNullable", True)
     percentageNull = column.get("percentageNull", 0)
@@ -145,7 +153,7 @@ def generate_special_data(column, table, seed, reference=None):
     nullRowIndexes = set(pd.Series(range(num_rows)).sample(n=numNullRows, random_state=seed, replace=False).tolist())
     
     if reference:
-        random.seed(seed)
+        # random.seed(seed)
         reference_extended = reference
         while numRowsToSample > len(reference):
             reference_extended += reference
@@ -154,7 +162,8 @@ def generate_special_data(column, table, seed, reference=None):
         special_filepath = os.path.join('special_data', f"{column['specialType']}.txt")
         with open(special_filepath, 'r') as file:
             special_data = file.readlines()
-        special_data = [line.strip() for line in special_data]
+        special_data = [special_type.convert_to_normal_type(line.strip()) for line in special_data]
+        
 
         if not isNullable and percentageNull > 0:
             raise ValueError("Column is not nullable but percentageNull > 0")
@@ -237,7 +246,7 @@ def generate_composite_fkey_data(fks, table, seed, output_folder, isUnique=False
     # A[p_a, p_b] 100
     
     foreign_table_data = get_foreignkey_data_set(foreign_table, references, output_folder)
-    random.seed(seed)
+    # random.seed(seed)
     added = set()
     result = { fieldNames[i]: [] for i in range(len(fieldNames)) }
     for i in range(num_rows):

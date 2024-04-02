@@ -22,8 +22,37 @@ def generate_random_string(min_length, max_length):
     random_string = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
 
     return random_string
-def generate_text_column(size, minLength=DEFAULT_MIN_LENGTH, maxLength=DEFAULT_MAX_LENGTH):
-    ans = []
-    for i in range(size):
-        ans.append(generate_random_string(minLength, maxLength))
-    return ans
+
+def generate_text_column(column, rows, minLength=DEFAULT_MIN_LENGTH, maxLength=DEFAULT_MAX_LENGTH):
+    isUnique = column.get("isUnique", False)
+    if isUnique and not has_enough_unique_strings(minLength, maxLength, rows):
+        raise TypeError(f"Number of row to be generated is less than the possible values rows: {rows} length = {maxLength - minLength}")
+
+    if isUnique:
+        # using list to make sure order is deterministic
+        result = []
+        seenVals = set()
+        while(len(result) < rows):
+            string = generate_random_string(minLength, maxLength)
+            if string in seenVals:
+                continue
+            seenVals.add(string)
+            result.append(string)
+    
+        return result
+    else:
+        return [generate_random_string(minLength, maxLength) for _ in range(rows)]
+
+# directly calculate the power assuming maxLength 
+def has_enough_unique_strings(minLength, maxLength, rowsToBeGenerated):
+    minLength = max(minLength, 0)
+    maxLength = max(maxLength, 0)
+    char_set_length = len(string.ascii_letters + string.digits)
+
+    if (maxLength == 0):
+        return rowsToBeGenerated <= 1
+    
+    num_possible_strings = sum(char_set_length ** length for length in range(minLength, maxLength + 1))
+
+    print(f"num_possible_strings: {num_possible_strings}")
+    return num_possible_strings >= rowsToBeGenerated
