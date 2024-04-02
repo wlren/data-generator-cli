@@ -2,8 +2,9 @@ import pandas as pd
 
 from toposort import topological_sort
 import IOHandler
+import random
+import numpy as np
 import generate_utils as gen
-
 # TODO: check if column in a foreign key, if so, cannot define isNullable in column, define in foreign key object instead
 
 def init_generator():
@@ -11,13 +12,13 @@ def init_generator():
     print(f"Processing file: {args.input_file_path} with seed {args.seed}")
     
     generator_json_data = IOHandler.get_json_data(args.input_file_path)
-    
     return generator_json_data, args
 
 def main():
     generator_json_data, args = init_generator()
     seed, output_directory_path = args.seed, args.output_directory_path
-
+    random.seed(seed)
+    np.random.seed(seed)
     tables = generator_json_data["tables"]
     table_order = topological_sort(generator_json_data)
 
@@ -72,7 +73,8 @@ def main():
                 column_data[column_name] = gen.generate_special_data(column, table, seed)
             # Normal type
             else:
-                column_data[column_name] = gen.generate_column_data(column, table, seed)
+                result = gen.generate_column_data(column, table, seed)
+                column_data[column_name] = result
 
         df = pd.DataFrame(column_data)
 

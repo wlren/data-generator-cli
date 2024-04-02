@@ -1,0 +1,37 @@
+{
+    "tables": [
+        {
+            "tableName": "Warehouses",
+            "numRows": 10,
+            "columns": [
+                {
+                    "fieldName": "w_id",
+                    "type": "integer",
+                    "isUnique": true
+                },
+                {
+                    "fieldName": "w_name",
+                    "type": "text",
+                    "specialType": "PERSON_NAME"
+                },
+                {
+                    "fieldName": "w_street",
+                    "type": "text"
+                },
+                {
+                    "fieldName": "w_city",
+                    "type": "text"
+                },
+                {
+                    "fieldName": "w_country",
+                    "type": "text",
+                    "specialType": "COUNTRY_ID",
+                    "isNullable": false
+                }
+            ],
+            "primary_key": [
+                "w_id"
+            ]
+        }
+    ]
+}

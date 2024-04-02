@@ -33,5 +33,7 @@ def topological_sort(schema):
             in_degree[dependent] -= 1  # Remove edge
             if in_degree[dependent] == 0:
                 q.append(dependent)
+
+    print("Topological Order: " , order)
     
     return order
