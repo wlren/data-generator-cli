@@ -261,6 +261,9 @@ def generate_composite_pkey_data(pk_data_set, primary_key, num_rows, seed, thres
         else:
             total_possible_combinations *= len(data)
             
+    if num_rows > total_possible_combinations:
+        raise ValueError("Not enough combinations to generate all rows for composite primary key")
+            
     if num_rows > total_possible_combinations * threshold:
         # generate all possible combinations
         lists_to_combine = []
