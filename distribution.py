@@ -1,8 +1,10 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+
 MAX_NUMBER = 100000000
 MIN_NUMBER = 0
+
 def generate_normal_distribution(mean, stddev, rows):
     data = np.random.normal(mean, stddev, size=rows)
     return list(data)
@@ -20,7 +22,7 @@ def generate_random_numbers(type, size):
         return np.random.randint(MIN_NUMBER, MAX_NUMBER, size=size)
     else:
         return generate_uniform_decimal_distribution(MIN_NUMBER, MAX_NUMBER, size)
-    
+
 
 def generate_integer_distribution(column, rows):
     # Generate integer column with the specified number of rows
@@ -57,9 +59,7 @@ def generate_integer_distribution(column, rows):
     else:
         type = column["type"]
         return generate_random_numbers(type, rows)
-        
 
-        
 
 def enforce_distribution_field_structure(distribution_field):
     constraints_map = {
@@ -74,16 +74,12 @@ def enforce_distribution_field_structure(distribution_field):
             return False
     return True
 
+# if __name__ == '__main__':
+#     test = {
+#          "fieldName": "age",
+#          "type": "float",
+#        }
 
-
-
-
-if __name__ == '__main__':
-    test = {
-         "fieldName": "age",
-         "type": "float",
-       }
-
-    print(generate_integer_distribution(test, 500))
-    # List of unsorted numbers
-    data = generate_integer_distribution(test,500)
+#     print(generate_integer_distribution(test, 500))
+#     # List of unsorted numbers
+#     data = generate_integer_distribution(test,500)
