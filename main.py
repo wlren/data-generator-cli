@@ -42,12 +42,22 @@ def main():
 
             # Composite PK
             if column_name in primary_key and len(primary_key) > 1:
-                composite_pk = handle_composite_pk_data(column, table, seed, primary_key, output_directory_path)
+                composite_pk = handle_composite_pk_data(column, table, seed, primary_key, output_directory_path, column_data)
+                
                 for name, data in composite_pk.items():
                     column_data[name] = data
+                    
+                # for name, data in composite_pk.items():
+                #     if len(name) == 1:
+                #         column_data[name] = data
+                #     else:
+                #         for i in range(len(name)):
+                #             column_data[name[i]] = data[i]
+
             #Composite FK
             elif gen.is_foreign_key(table, column_name)[0] and len(gen.is_foreign_key(table, column_name)[1]['fieldName']) > 1:
                 composite_fk = handle_composite_fk_data(table, seed, gen.is_foreign_key(table, column_name)[1], output_directory_path)
+                
                 for name, data in composite_fk.items():
                     column_data[name] = data
             #Single PK (+ FK if total participation)
@@ -56,8 +66,7 @@ def main():
             # Single FK
             elif gen.is_foreign_key(table, column_name)[0]:
                 column_data[column_name] = gen.generate_foreign_key_data(
-                    column, table, seed, output_directory_path
-                )
+                    column, table, seed, output_directory_path, gen.is_foreign_key(table, column_name)[1])
             # Speical type
             elif 'specialType' in column:
                 column_data[column_name] = gen.generate_special_data(column, table, seed)
@@ -70,17 +79,60 @@ def main():
         IOHandler.writeCSV(output_directory_path, df, table_name)
   
   
-def handle_composite_pk_data(column, table, seed, primary_key):
-    # Check if pk is part of fk, if so, generate entire fk and return entire fk
-    primary_key_data = gen.generate_composite_key_data(primary_key, table, seed)
-    # if pk not in any fk, generate pk data
-    # [p1, p2]
-    # [f1, f2]
+def handle_composite_pk_data(column, table, seed, primary_key, output_directory_path, column_data):
+    pk_data_set = {}
+    generated = set()
+    for pk in primary_key:
+        if pk in column_data or pk in generated:
+            continue
+        
+        is_foreign_key = gen.is_foreign_key(table, pk)[0]
+        fk_object = gen.is_foreign_key(table, pk)[1]
+        
+        if is_foreign_key:
+            # # composite total participation  
+            # if len(fk_object['fieldName']) == len(primary_key):
+            #     fk_object["isNullable"] = False
+            #     fk_object["percentageNull"] = 0
+            #     fk_object["isUnique"] = True
+            #     foreign_key_data = gen.generate_composite_fkey_data(fk_object, table, seed, output_directory_path)
+                
+            #     for name in foreign_key_data.key():
+            #         generated.add(name)
+                    
+            #     fk_composite = tuple(foreign_key_data.keys())
+            #     fk_data = [foreign_key_data[name] for name in fk_composite]
+                
+            #     pk_data_set[fk_composite] = fk_data
+                
+            # Composite FK in PK
+            if len(fk_object['fieldName']) > 1:
+                fieldNames = fk_object["fieldName"]
+                references = fk_object["references"]
+                foreign_table_data = gen.get_foreignkey_data_set(fk_object["tableName"], references, output_directory_path)
+                fieldNames_to_references = { fieldNames[i]: references[i] for i in range(len(fieldNames)) }
+                
+                for name in fieldNames:
+                    generated.add(name)
+                fk_composite = tuple(fieldNames)
+                fk_data = [foreign_table_data[fieldNames_to_references[name]] for name in fk_composite]
+                
+                pk_data_set[fk_composite] = fk_data
+                
+            # part of PK is single FK
+            elif len(fk_object['fieldName']) == 1:
+                fk_object["isNullable"] = False
+                fk_object["percentageNull"] = 0
+                pk_data_set[pk] = gen.get_foreignkey_data_set(fk_object["tableName"], references[0], output_directory_path)[references[0]]
+                generated.add(pk)
+        else:
+            pk_data_set[pk] = gen.generate_primary_key_data(column, table, seed, output_directory_path)
+            generated.add(pk)
+        
+    return gen.generate_composite_pkey_data(pk_data_set, primary_key, table["numRows"], seed)
 
-    return primary_key_data
-
-def handle_composite_fk_data(table, seed, foreign_keys, output_directory_path):
-    foreign_key_data = gen.generate_composite_fkey_data(foreign_keys, table, seed, output_directory_path)
+def handle_composite_fk_data(table, seed, fk_object, output_directory_path):
+    foreign_key_data = gen.generate_composite_fkey_data(fk_object, table, seed, output_directory_path)
     return foreign_key_data
 
 if __name__ == '__main__':

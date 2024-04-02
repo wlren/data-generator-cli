@@ -1,3 +1,5 @@
+from collections import defaultdict
+from itertools import product
 import math
 import os
 from random import random
@@ -204,7 +206,7 @@ def generate_primary_key_data(column, table, seed, output_dir_path):
     else:
         return generate_column_data(column, table, seed, other_table_values)
 
-def generate_foreign_key_data(column, table, seed, output_dir_path):
+def generate_foreign_key_data(column, table, seed, output_dir_path, fk_object):
     is_special = "specialType" in column
     column["isUnique"] = True
     column["isNullable"] = False
@@ -221,27 +223,92 @@ def generate_foreign_key_data(column, table, seed, output_dir_path):
     else:
         return generate_column_data(column, table, seed, other_table_values)
 
-def generate_composite_pkey_data(pks, table, seed):
-    return
-
-def generate_composite_fkey_data(fks, table, seed, output_folder, isUnique=False):
-    fieldNames = fks["fieldName"]
-    references = fks["references"]
-    foreign_table = fks["tableName"]
-    num_rows = table["numRows"]
+def generate_composite_pkey_data(pk_data_set, primary_key, num_rows, seed, threshold = 0.7):
+    selected = set()
+    res = defaultdict(list)
+    random.seed(seed)
     
-    reference_to_fieldNames = { references[i]: fieldNames[i] for i in range(len(fieldNames)) }
-    # TODO Composite fkey can have isNullable/percentageNull
-    # TODO isUnique need to check len to see if possible
-    # C[f_a, f_b] 1000 unique
-    # A[p_a, p_b] 100
+    total_possible_combinations = 1
+    for key, data in pk_data_set.items():
+        if isinstance(key, tuple):
+            total_possible_combinations *= len(data[0])
+        else:
+            total_possible_combinations *= len(data)
+            
+    if num_rows > total_possible_combinations * threshold:
+        # generate all possible combinations
+        lists_to_combine = []
+        for key, data in pk_data_set.items():
+            if isinstance(key, tuple):
+                values = list(zip(*data))
+                lists_to_combine.append(values)
+            else:
+                lists_to_combine.append([(value,) for value in data])
+
+        cartesian_product = list(product(*lists_to_combine))
+        random.shuffle(cartesian_product)
+        
+        pk_data = list(cartesian_product)[:num_rows]
+        for i, key in enumerate(pk_data_set.keys()):
+            if isinstance(key, tuple):
+                for j in range(len(key)):
+                    res[key[j]] = [pk_data[k][i][j] for k in range(num_rows)]
+            else :
+                res[key] = [pk_data[k][i] for k in range(num_rows)]
+
+    else:
+        while len(selected) < num_rows:
+            selected_idx = 0
+            chosenIndices = (0 for i in range(len(pk_data_set.keys())))
+            
+            for key, data in pk_data_set.items():
+                if isinstance(key, tuple):
+                    index = random.randint(0, len(data[0]) - 1)
+                    for i in range(len(key)):
+                        res[key[i]].append(data[i][index])
+                else:
+                    index = random.randint(0, len(data) - 1)
+                    res[key].append(data[index])
+
+                chosenIndices[selected_idx] = index
+                selected_idx += 1
+            
+            if chosenIndices in selected:
+                for key in res.keys():
+                    res[key].pop()
+                continue
+            
+        assert(len(primary_key) == len(res.keys()))
+    return res
+
+def generate_composite_fkey_data(fk_object, table, seed, output_folder):
+    fieldNames = fk_object["fieldName"]
+    references = fk_object["references"]
+    foreign_table = fk_object["tableName"]
+    isUnique = fk_object.get("isUnique", False)
+    isNullable = fk_object.get("isNullable", False)
+    percentageNull = fk_object.get("percentageNull", 0)
+    num_rows = table["numRows"]
+    numRowsToSample = math.floor(num_rows * (1 - percentageNull))
+    numNullRows = num_rows - numRowsToSample
+    nullRowIndexes = set(pd.Series(range(num_rows)).sample(n=numNullRows, random_state=seed, replace=False).tolist())
     
     foreign_table_data = get_foreignkey_data_set(foreign_table, references, output_folder)
+    reference_to_fieldNames = { references[i]: fieldNames[i] for i in range(len(fieldNames)) }
+    result = { fieldNames[i]: [] for i in range(len(fieldNames)) }
+
+    if isUnique and num_rows > len(foreign_table_data[fieldNames[0]]):
+        raise ValueError("Composite Foreign Key has isUnique set to True but the referenced table does not have enough unique values")
+    
     random.seed(seed)
     added = set()
-    result = { fieldNames[i]: [] for i in range(len(fieldNames)) }
+    
     for i in range(num_rows):
-        # { 'fieldName': [data], 'fieldName2': [data]}
+        if i in nullRowIndexes:
+            for key in foreign_table_data.keys():
+                result[reference_to_fieldNames[key]].append("null")
+            continue
+        
         index = random.int(0, len(foreign_table_data[fieldNames[0]]) - 1)
         if isUnique:
             while index in added:
