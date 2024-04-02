@@ -9,6 +9,14 @@
                     "type": "text"
                 },
                 {
+                    "fieldName": "emptyStringGeneration",
+                    "type": "text",
+                    "constraints": {
+                        "minLength": 0,
+                        "maxLength": 2
+                    }
+                },
+                {
                     "fieldName": "personFirstName",
                     "type": "text",
                     "isNullable": true,
@@ -19,7 +27,7 @@
                     "type": "text",
                     "constraints": {
                         "minLength": 1,
-                        "maxLength": 1
+                        "maxLength": 3
                     }
                 },
                 {

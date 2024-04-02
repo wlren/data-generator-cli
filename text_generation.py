@@ -21,10 +21,29 @@ def generate_random_string(min_length, max_length):
     random_string = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
 
     return random_string
-def generate_text_column(column, size, seed, minLength=DEFAULT_MIN_LENGTH, maxLength=DEFAULT_MAX_LENGTH):
+def generate_text_column(column, rows, seed, minLength=DEFAULT_MIN_LENGTH, maxLength=DEFAULT_MAX_LENGTH):
     ans = []
     isUnique = column.get("isUnique", False)
+    if not is_possible_string(minLength, maxLength, rows):
+        raise TypeError(f"Number of row to be generated is less than the possible values rows: {rows} length = {maxLength - minLength}")
     random.seed(seed)
-    for i in range(size):
-        ans.append(generate_random_string(minLength, maxLength))
-    return ans
+    ans = set()
+    while(len(ans) < rows):
+        # Keep generating until we get number of len
+        ans.add(generate_random_string(minLength, maxLength))
+    return list(ans)
+
+def is_possible_string(minLength, maxLength, rowsToBeGenerated):
+    # num_possible_value = 1
+    # ascii_char_length = len(string.ascii_letters + string.digits)
+    # print(ascii_char_length)
+    # if(length == 0):
+    #     return rowsToBeGenerated <= 1
+    
+    # for i in range(minLength, maxLength + 1):
+    #     num_possible_value *= ascii_char_length
+    #     if num_possible_value >= rowsToBeGenerated:
+    #         return True
+    
+    return False
+

@@ -1,0 +1,25 @@
+{
+    "tables": [
+        {
+            "tableName": "NormalColumnsComparison",
+            "numRows": 238000,
+            "columns": [
+                {
+                    "fieldName": "personEmail",
+                    "type": "text"
+                },
+                {
+                    "fieldName": "emptyStringGeneration",
+                    "type": "text",
+                    "constraints": {
+                        "minLength": 3,
+                        "maxLength": 3
+                    }
+                }
+            ],
+            "primary_key": [
+                "personLastName"
+            ]
+        }
+    ]
+}
