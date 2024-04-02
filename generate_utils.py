@@ -19,7 +19,7 @@ CONSTRAINTS_BY_TYPE = {
     'boolean': set([])
 }
 
-NUMERIC_TYPES = ['int', 'float', 'date']
+NUMERIC_TYPES = ['int', 'float']
 
 def is_number_type(type):
     return type == "integer" or type == "float"
