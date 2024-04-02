@@ -29,17 +29,22 @@ def generate_text_column(column, rows, minLength=DEFAULT_MIN_LENGTH, maxLength=D
         raise TypeError(f"Number of row to be generated is less than the possible values rows: {rows} length = {maxLength - minLength}")
 
     if isUnique:
-        ans = set()
-        while(len(ans) < rows):
-            ans.add(generate_random_string(minLength, maxLength))
+        # using list to make sure order is deterministic
+        result = []
+        seenVals = set()
+        while(len(result) < rows):
+            string = generate_random_string(minLength, maxLength)
+            if string in seenVals:
+                continue
+            seenVals.add(string)
+            result.append(string)
     
-        return list(ans)
+        return result
     else:
         return [generate_random_string(minLength, maxLength) for _ in range(rows)]
 
 # directly calculate the power assuming maxLength 
 def has_enough_unique_strings(minLength, maxLength, rowsToBeGenerated):
-    print("haha")
     minLength = max(minLength, 0)
     maxLength = max(maxLength, 0)
     char_set_length = len(string.ascii_letters + string.digits)

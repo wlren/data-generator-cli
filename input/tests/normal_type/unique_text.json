@@ -2,21 +2,31 @@
     "tables": [
         {
             "tableName": "UniqueTextGeneration",
-            "numRows": 238238,
+            "numRows": 238328,
             "columns": [
+                {
+                    "fieldName": "priKey",
+                    "type": "integer"
+                },
                 {
                     "fieldName": "uniqueText",
                     "type": "text",
+                    "isUnique": true,
                     "constraints": {
                         "minLength": 3,
                         "maxLength": 3
-                    },
-                    "isUnique": true,
-                    "isNullable": true,
-                    "percentageNull": 0.1
-                },
+                    }
+                }, 
                 {
                     "fieldName": "repeatableText",
+                    "type": "text",
+                    "constraints": {
+                        "minLength": 1,
+                        "maxLength": 1
+                    }
+                },
+                {
+                    "fieldName": "repeatableText2",
                     "type": "text",
                     "constraints": {
                         "minLength": 1,
@@ -25,7 +35,7 @@
                 }
             ],
             "primary_key": [
-                "personLastName"
+                "priKey"
             ]
         }
     ]

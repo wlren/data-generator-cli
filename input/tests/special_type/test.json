@@ -10,6 +10,11 @@
                     "specialType": "PERSON_EMAIL"
                 },
                 {
+                    "fieldName": "personEmail2",
+                    "type": "text",
+                    "specialType": "PERSON_EMAIL"
+                },
+                {
                     "fieldName": "personFirstName",
                     "type": "text",
                     "specialType": "PERSON_FIRST_NAME",
