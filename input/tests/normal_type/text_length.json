@@ -1,20 +1,26 @@
 {
     "tables": [
         {
-            "tableName": "NormalColumnsComparison",
-            "numRows": 238000,
+            "tableName": "UniqueTextGeneration",
+            "numRows": 62,
             "columns": [
                 {
-                    "fieldName": "personEmail",
-                    "type": "text"
-                },
-                {
-                    "fieldName": "emptyStringGeneration",
+                    "fieldName": "textGeneration",
                     "type": "text",
                     "constraints": {
                         "minLength": 3,
                         "maxLength": 3
-                    }
+                    },
+                    "isUnique": true
+                },
+                {
+                    "fieldName": "textGeneration",
+                    "type": "text",
+                    "constraints": {
+                        "minLength": 1,
+                        "maxLength": 3
+                    },
+                    "isUnique": true
                 }
             ],
             "primary_key": [

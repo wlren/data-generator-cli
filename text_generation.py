@@ -24,7 +24,7 @@ def generate_random_string(min_length, max_length):
 def generate_text_column(column, rows, seed, minLength=DEFAULT_MIN_LENGTH, maxLength=DEFAULT_MAX_LENGTH):
     ans = []
     isUnique = column.get("isUnique", False)
-    if not is_possible_string(minLength, maxLength, rows):
+    if not has_enough_unique_strings(minLength, maxLength, rows):
         raise TypeError(f"Number of row to be generated is less than the possible values rows: {rows} length = {maxLength - minLength}")
     random.seed(seed)
     ans = set()
@@ -33,17 +33,26 @@ def generate_text_column(column, rows, seed, minLength=DEFAULT_MIN_LENGTH, maxLe
         ans.add(generate_random_string(minLength, maxLength))
     return list(ans)
 
-def is_possible_string(minLength, maxLength, rowsToBeGenerated):
-    # num_possible_value = 1
-    # ascii_char_length = len(string.ascii_letters + string.digits)
+def has_enough_unique_strings(minLength, maxLength, rowsToBeGenerated):
+    num_possible_values = 1
+    ascii_char_length = len(string.ascii_letters + string.digits)
     # print(ascii_char_length)
-    # if(length == 0):
-    #     return rowsToBeGenerated <= 1
+    if(maxLength == 0):
+        return rowsToBeGenerated <= 1
     
-    # for i in range(minLength, maxLength + 1):
-    #     num_possible_value *= ascii_char_length
-    #     if num_possible_value >= rowsToBeGenerated:
-    #         return True
+    num_possible_prev_length = 1
+    for _ in range(minLength):
+        num_possible_prev_length *= ascii_char_length
+        if num_possible_prev_length >= rowsToBeGenerated:
+            return True
     
+    num_possible_values = num_possible_prev_length
+    for _ in range(minLength + 1, maxLength + 1):
+        num_possible_values += ascii_char_length * num_possible_prev_length
+        if num_possible_values >= rowsToBeGenerated:
+            return True
+        num_possible_prev_length *= ascii_char_length
+    
+    print("JALSDHSDHALSHDLSKAD", num_possible_values)
     return False
 
