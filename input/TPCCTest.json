@@ -24,7 +24,9 @@
                 },
                 {
                     "fieldName": "w_country",
-                    "type": "text"
+                    "type": "text",
+                    "specialType": "COUNTRY_ID",
+                    "isNullable": false
                 }
             ],
             "primary_key": [

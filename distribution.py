@@ -52,15 +52,15 @@ class FloatColumn:
             data = generate_normal_distribution(mean, stddev, rows)
         else:
             data = np.random.uniform(low=self.DEFAULT_MIN_VALUE, high=self.DEFAULT_MAX_VALUE, size=rows)
-        data = np.around(data, decimals=self.decimal_point)
+        #Rounding to decimal point    
+        data = [format(datum, f'.{self.decimal_point}f') for datum in data]
         return data
 
 
 def enforce_distribution_field_structure(distribution_field):
     constraints_map = {
         "normal": ["mean", "stddev"],
-        "uniform": ["min", "max"],
-        "binomial": ["n", "p"]
+        "uniform": ["min", "max"]
     }
     dist_type = distribution_field["type"]
     constraints = constraints_map.get(dist_type, [])
