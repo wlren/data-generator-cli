@@ -62,7 +62,8 @@ def main():
                 column_data[column_name] = gen.generate_special_data(column, table, seed)
             # Normal type
             else:
-                column_data[column_name] = gen.generate_column_data(column, table, seed)
+                result = gen.generate_column_data(column, table, seed)
+                column_data[column_name] = result
 
         df = pd.DataFrame(column_data)
 

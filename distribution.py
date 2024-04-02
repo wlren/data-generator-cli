@@ -77,7 +77,8 @@ class FloatColumn:
         else:
             if self.isUnique:
                 data = self.generate_unique_floats(rows, self.decimal_point, self.min_value, self.max_value)
-            data = np.random.uniform(low=self.min_value, high=self.max_value, size=rows)
+            else:
+                data = np.random.uniform(low=self.min_value, high=self.max_value, size=rows)
         #Rounding to decimal point    
         data = [format(datum, f'.{self.decimal_point}f') for datum in data]
         return data
@@ -85,7 +86,9 @@ class FloatColumn:
     def generate_unique_floats(self, rows, dp, min_value=DEFAULT_MIN_VALUE, max_value=DEFAULT_MAX_VALUE):
         threshold = 0.9
         step = 1/(10**dp)
-        numPossibleValues = (max_value - min_value) / step
+        numPossibleValues = (max_value - min_value) / step + 1
+        if numPossibleValues < rows:
+            raise TypeError(f"Too many rows requested :{rows}, {numPossibleValues}")
         if rows < threshold * numPossibleValues:
             unique_floats = set()
             while len(unique_floats) < rows:
