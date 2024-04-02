@@ -136,10 +136,11 @@
                     "isNullable": false
                 },
                 {
-                    "fieldName": "boolUnique",
+                    "fieldName": "boolUniqueNullable",
                     "type": "boolean",
                     "isUnique": true,
-                    "isNullable": true
+                    "isNullable": true,
+                    "percentageNull": 0.99
                 }
             ],
             "primary_key": [
