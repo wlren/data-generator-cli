@@ -34,6 +34,6 @@ def topological_sort(schema):
             if in_degree[dependent] == 0:
                 q.append(dependent)
 
-    print(order)
+    print("Topological Order: " + order)
     
     return order
