@@ -231,7 +231,6 @@ def generate_primary_key_data(column, table, seed, output_dir_path):
             other_table_values,
         )
 
-# TODO: Need to add in fk_object to all fns calling this
 def generate_foreign_key_data(column, table, seed, output_dir_path, fk_object):
     is_special = "specialType" in column
     column["isUnique"] = False
@@ -304,6 +303,8 @@ def generate_composite_pkey_data(pk_data_set, primary_key, num_rows, seed, thres
                 for key in res.keys():
                     res[key].pop()
                 continue
+            else:
+                selected.add(chosenIndices)
             
         assert(len(primary_key) == len(res.keys()))
     return res
@@ -321,7 +322,7 @@ def generate_composite_fkey_data(fk_object, table, seed, output_folder):
     nullRowIndexes = set(pd.Series(range(num_rows)).sample(n=numNullRows, random_state=seed, replace=False).tolist())
     
     foreign_table_data = get_foreignkey_data_set(foreign_table, references, output_folder)
-    reference_to_fieldNames = { references[i]: fieldNames[i] for i in range(len(fieldNames)) }
+    fieldNames_to_references = { fieldNames[i]: references[i] for i in range(len(fieldNames)) }
     result = { fieldNames[i]: [] for i in range(len(fieldNames)) }
 
     if isUnique and num_rows > len(foreign_table_data[fieldNames[0]]):
@@ -332,19 +333,19 @@ def generate_composite_fkey_data(fk_object, table, seed, output_folder):
     
     for i in range(num_rows):
         if i in nullRowIndexes:
-            for key in foreign_table_data.keys():
-                result[reference_to_fieldNames[key]].append("null")
+            for columnNames in fieldNames:
+                result[columnNames].append("null")
             continue
         
-        index = random.int(0, len(foreign_table_data[fieldNames[0]]) - 1)
+        index = random.int(0, len(foreign_table_data[references[0]]) - 1)
         if isUnique:
             while index in added:
-                index = random.int(0, len(foreign_table_data[fieldNames[0]]) - 1)
+                index = random.int(0, len(foreign_table_data[references[0]]) - 1)
         added.add(index)
 
-        for key in foreign_table_data.keys():
-            fieldName = reference_to_fieldNames[key]
-            result[fieldName].append(foreign_table_data[key][index])
+        for columnName in fieldNames:
+            referenceColumn = fieldNames_to_references[columnName]
+            result[columnName].append(foreign_table_data[referenceColumn][index])
 
     return result
 '''
