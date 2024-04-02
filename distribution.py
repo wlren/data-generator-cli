@@ -25,7 +25,7 @@ class IntegerColumn:
             return [int(x) for x in data]
         else:
             if self.isUnique:
-                num_possible_unique_vals = self.max_value - self.min_value
+                num_possible_unique_vals = self.max_value - self.min_value + 1
                 if num_possible_unique_vals < rows:
                     raise TypeError(f"Too much unique values, possible: {num_possible_unique_vals}, rows requested {rows}")
                 return self.generate_unique_integers(self.min_value, self.max_value, rows)
@@ -86,7 +86,7 @@ class FloatColumn:
             unique_floats = set()
             while len(unique_floats) < rows:
                 # Attempt to add a new unique float
-                unique_floats.add(random.uniform(low=min_value, high=max_value + 1))
+                unique_floats.add(np.random.uniform(low=min_value, high=max_value + 1))
             return np.array(list(unique_floats))
         else:
             # If the number of rows is close to the total number of values, generate the full range and shuffle
@@ -123,10 +123,10 @@ def generate_number_column(column, rows, seed):
             raise SyntaxError("Wrong syntax for distribution")
     isUnique = column.get("isUnique", False)
     if column["type"] == "integer":
-        return IntegerColumn(isUnique, distribution_field, constraints.get("min", IntegerColumn.DEFAULT_MIN_VALUE), distribution_field.get("max", IntegerColumn.DEFAULT_MAX_VALUE)).generate_data(rows)
+        return IntegerColumn(isUnique, distribution_field, constraints.get("min", IntegerColumn.DEFAULT_MIN_VALUE), constraints.get("max", IntegerColumn.DEFAULT_MAX_VALUE)).generate_data(rows)
     elif column["type"] == "float":
         dp = column.get("decimal_point", FloatColumn.DEFAULT_DECIMAL_POINT)
-        return FloatColumn(isUnique, distribution_field, constraints.get("min", FloatColumn.DEFAULT_MIN_VALUE), distribution_field.get("max", FloatColumn.DEFAULT_MAX_VALUE), dp).generate_data(rows)
+        return FloatColumn(isUnique, distribution_field, constraints.get("min", FloatColumn.DEFAULT_MIN_VALUE), constraints.get("max", FloatColumn.DEFAULT_MAX_VALUE), dp).generate_data(rows)
     else:
         raise TypeError("Invalid number type: only float / integer")
         

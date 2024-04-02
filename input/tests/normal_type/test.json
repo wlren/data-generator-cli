@@ -121,7 +121,7 @@
                     "isUnique": true,
                     "constraints": {
                         "min": 0,
-                        "max": 50
+                        "max": 49
                     }
                 }
             ],
