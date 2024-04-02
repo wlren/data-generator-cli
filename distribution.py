@@ -8,21 +8,23 @@ MIN_NUMBER = 0
 def generate_normal_distribution(mean, stddev, rows):
     data = np.random.normal(mean, stddev, size=rows)
     return list(data)
+
 def generate_uniform_integer_distribution(min, max, rows):
     ans = []
     for i in range(rows):
          rand_int = np.random.randint(low=min, high=max)
          ans.append(rand_int)
     return ans
+
 def generate_uniform_decimal_distribution(min, max, rows):
     ans = np.random.uniform(low=min, high=max, size = rows)
     return list(ans)
+
 def generate_random_numbers(type, size):
     if type == "integer":
         return np.random.randint(MIN_NUMBER, MAX_NUMBER, size=size)
     else:
         return generate_uniform_decimal_distribution(MIN_NUMBER, MAX_NUMBER, size)
-
 
 def generate_integer_distribution(column, rows):
     # Generate integer column with the specified number of rows
@@ -59,7 +61,6 @@ def generate_integer_distribution(column, rows):
     else:
         type = column["type"]
         return generate_random_numbers(type, rows)
-
 
 def enforce_distribution_field_structure(distribution_field):
     constraints_map = {

@@ -3,6 +3,7 @@ import string
 
 DEFAULT_MIN_LENGTH = 0
 DEFAULT_MAX_LENGTH = 255
+
 def generate_random_string(min_length, max_length):
     """
     Generate a random string of specified minimum and maximum length.
