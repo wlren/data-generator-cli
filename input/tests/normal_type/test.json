@@ -123,6 +123,24 @@
                         "min": 0,
                         "max": 49
                     }
+                }, 
+                {
+                    "fieldName": "boolNullable",
+                    "type": "boolean",
+                    "isNullable": true,
+                    "percentageNull": 0.5
+                },
+                {
+                    "fieldName":"boolNonNullable",
+                    "type":"boolean",
+                    "isNullable": false
+                },
+                {
+                    "fieldName": "boolUniqueNullable",
+                    "type": "boolean",
+                    "isUnique": true,
+                    "isNullable": true,
+                    "percentageNull": 0.99
                 }
             ],
             "primary_key": [
