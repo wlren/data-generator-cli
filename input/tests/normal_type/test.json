@@ -18,8 +18,8 @@
                     "fieldName": "personLastName",
                     "type": "text",
                     "constraints": {
-                        "minLength": 3,
-                        "maxLength": 10
+                        "minLength": 1,
+                        "maxLength": 1
                     }
                 },
                 {
@@ -100,6 +100,9 @@
                     },
                     "decimal_point": 3
                 }
+            ],
+            "primary_key": [
+                "personLastName"
             ]
         }
     ]
