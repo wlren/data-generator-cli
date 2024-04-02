@@ -4,6 +4,8 @@ from toposort import topological_sort
 import IOHandler
 import generate_utils as gen
 
+# TODO: check if column in a foreign key, if so, cannot define isNullable in column, define in foreign key object instead
+
 def init_generator():
     args = IOHandler.get_parser().parse_args()
     print(f"Processing file: {args.input_file_path} with seed {args.seed}")
@@ -32,15 +34,21 @@ def main():
 
         # Single key
         for column in table["columns"]:
+
             column_name = column["fieldName"]
+
             if column_name in column_data:
                 continue
             #Composite PK
             if column_name in primary_key and len(primary_key) > 1:
-                composite_pk = handle_composite_pk_data(column, table, seed, primary_key)
+                composite_pk = handle_composite_pk_data(column, table, seed, primary_key, output_directory_path)
+                for name, data in composite_pk.items():
+                    column_data[name] = data
             #Composite FK
-            elif gen.is_foreign_key(table, column_name)[0] and gen.is_foreign_key(table, column_name)[1] > 1:
-                composite_fk = handle_composite_fk_data(column, table, seed, foreign_keys)
+            elif gen.is_foreign_key(table, column_name)[0] and len(gen.is_foreign_key(table, column_name)[1]['fieldName']) > 1:
+                composite_fk = handle_composite_fk_data(table, seed, gen.is_foreign_key(table, column_name)[1], output_directory_path)
+                for name, data in composite_fk.items():
+                    column_data[name] = data
             #Single PK (+ FK if total participation)
             elif column_name in primary_key:
                 column_data[column_name] = gen.generate_primary_key_data(column, table, seed)
@@ -63,12 +71,13 @@ def handle_composite_pk_data(column, table, seed, primary_key):
     # Check if pk is part of fk, if so, generate entire fk and return entire fk
     primary_key_data = gen.generate_composite_key_data(primary_key, table, seed)
     # if pk not in any fk, generate pk data
+    # [p1, p2]
+    # [f1, f2]
+
     return primary_key_data
 
-def handle_composite_fk_data(column, table, seed, foreign_keys):
-    # just generate fk data
-    foreign_key_data = gen.generate_composite_key_data(foreign_keys, table, seed)
-
+def handle_composite_fk_data(table, seed, foreign_keys, output_directory_path):
+    foreign_key_data = gen.generate_composite_fkey_data(foreign_keys, table, seed, output_directory_path)
     return foreign_key_data
 
 if __name__ == '__main__':

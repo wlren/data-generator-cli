@@ -1,5 +1,6 @@
 import math
 import os
+from random import random
 import pandas as pd
 import IOHandler
 
@@ -99,9 +100,6 @@ def generate_special_data(column, table, seed):
             result.append(sampled_data.pop())
     return result
 
-def generate_composite_key_data(primary_keys, table, seed):
-    return
-
 # Handles FK check
 def generate_primary_key_data(column, table, seed):
     is_special = 'specialType' in column
@@ -110,8 +108,6 @@ def generate_primary_key_data(column, table, seed):
     
     if is_special:
         return generate_special_data(column, table, seed)
-    
-    
     
     return
 
@@ -122,8 +118,39 @@ def is_foreign_key(table_schema, column_name):
     if "foreign_key" in table_schema:
         for fk in table_schema["foreign_key"]:
             if column_name in fk["fieldName"]:
-                return (True, len(fk["fieldName"]))
-    return (False, 0)
+                return (True, fk)
+    return (False, [])
 
 def get_foreignkey_data_set(foreign_table: str, column_name: list[str], output_folder: str):
     pks: list[list[str]] = IOHandler.read_csv_get_primary_keys(f"{output_folder}/{foreign_table}.csv", column_name)
+
+
+def generate_composite_fkey_data(fks, table, seed, output_folder, isUnique=False):
+    fieldNames = fks["fieldName"]
+    references = fks["references"]
+    foreign_table = fks["tableName"]
+    num_rows = table["numRows"]
+    
+    reference_to_fieldNames = { references[i]: fieldNames[i] for i in range(len(fieldNames)) }
+    # TODO Composite fkey can have isNullable/percentageNull
+    # TODO isUnique need to check len to see if possible
+    # C[f_a, f_b] 1000 unique
+    # A[p_a, p_b] 100
+    
+    foreign_table_data = get_foreignkey_data_set(foreign_table, references, output_folder)
+    random.seed(seed)
+    added = set()
+    result = { fieldNames[i]: [] for i in range(len(fieldNames)) }
+    for i in range(num_rows):
+        # { 'fieldName': [data], 'fieldName2': [data]}
+        index = random.int(0, len(foreign_table_data[fieldNames[0]]) - 1)
+        if isUnique:
+            while index in added:
+                index = random.int(0, len(foreign_table_data[fieldNames[0]]) - 1)
+        added.add(index)
+
+        for key in foreign_table_data.keys():
+            fieldName = reference_to_fieldNames[key]
+            result[fieldName].append(foreign_table_data[key][index])
+
+    return result
