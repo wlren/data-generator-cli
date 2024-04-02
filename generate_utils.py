@@ -106,7 +106,7 @@ def generate_column_data(column, table, seed, reference=None):
             args = {}
             if "constraints" in column:
                 args = column["constraints"]
-            sampled_answer_row = text_generation.generate_text_column(numRowsToSample, seed, **args)
+            sampled_answer_row = text_generation.generate_text_column(column, numRowsToSample, seed, **args)
 
     if isNullable:
         null_array = ["null" for i in range(rows - numRowsToSample)]

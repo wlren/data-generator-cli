@@ -1,7 +1,7 @@
 {
     "tables": [
         {
-            "tableName": "NormalColumns",
+            "tableName": "NormalColumnsComparison",
             "numRows": 50,
             "columns": [
                 {
@@ -99,6 +99,30 @@
                         "max": 20000
                     },
                     "decimal_point": 3
+                },
+                {
+                    "fieldName": "uniqueTextColumn",
+                    "type": "text",
+                    "isUnique": true
+                },
+                {
+                    "fieldName": "uniqueIntegerColumn",
+                    "type": "integer",
+                    "isUnique": true
+                },
+                {
+                    "fieldName": "uniqueFloatColumn",
+                    "type": "float",
+                    "isUnique": true
+                },
+                {
+                    "fieldName": "uniqueIntegerColumnLowRange",
+                    "type": "integer",
+                    "isUnique": true,
+                    "constraints": {
+                        "min": 0,
+                        "max": 50
+                    }
                 }
             ],
             "primary_key": [
