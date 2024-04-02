@@ -5,7 +5,7 @@
             "numRows": 238238,
             "columns": [
                 {
-                    "fieldName": "textGeneration",
+                    "fieldName": "uniqueText",
                     "type": "text",
                     "constraints": {
                         "minLength": 3,
@@ -16,13 +16,12 @@
                     "percentageNull": 0.1
                 },
                 {
-                    "fieldName": "textGeneration",
+                    "fieldName": "repeatableText",
                     "type": "text",
                     "constraints": {
                         "minLength": 1,
-                        "maxLength": 3
-                    },
-                    "isUnique": true
+                        "maxLength": 1
+                    }
                 }
             ],
             "primary_key": [

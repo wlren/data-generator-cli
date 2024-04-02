@@ -21,38 +21,34 @@ def generate_random_string(min_length, max_length):
     random_string = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
 
     return random_string
-def generate_text_column(column, rows, seed, minLength=DEFAULT_MIN_LENGTH, maxLength=DEFAULT_MAX_LENGTH):
-    ans = []
-    isUnique = column.get("isUnique", False)
-    if not has_enough_unique_strings(minLength, maxLength, rows):
-        raise TypeError(f"Number of row to be generated is less than the possible values rows: {rows} length = {maxLength - minLength}")
-    random.seed(seed)
-    ans = set()
-    while(len(ans) < rows):
-        # Keep generating until we get number of len
-        ans.add(generate_random_string(minLength, maxLength))
-    return list(ans)
 
+def generate_text_column(column, rows, seed, minLength=DEFAULT_MIN_LENGTH, maxLength=DEFAULT_MAX_LENGTH):
+    isUnique = column.get("isUnique", False)
+    if isUnique and not has_enough_unique_strings(minLength, maxLength, rows):
+        raise TypeError(f"Number of row to be generated is less than the possible values rows: {rows} length = {maxLength - minLength}")
+    
+    random.seed(seed)
+
+    if isUnique:
+        ans = set()
+        while(len(ans) < rows):
+            ans.add(generate_random_string(minLength, maxLength))
+    
+        return list(ans)
+    else:
+        return [generate_random_string(minLength, maxLength) for _ in range(rows)]
+
+# directly calculate the power assuming maxLength 
 def has_enough_unique_strings(minLength, maxLength, rowsToBeGenerated):
-    num_possible_values = 1
-    ascii_char_length = len(string.ascii_letters + string.digits)
-    # print(ascii_char_length)
-    if(maxLength == 0):
+    print("haha")
+    minLength = max(minLength, 0)
+    maxLength = max(maxLength, 0)
+    char_set_length = len(string.ascii_letters + string.digits)
+
+    if (maxLength == 0):
         return rowsToBeGenerated <= 1
     
-    num_possible_prev_length = 1
-    for _ in range(minLength):
-        num_possible_prev_length *= ascii_char_length
-        if num_possible_prev_length >= rowsToBeGenerated:
-            return True
-    
-    num_possible_values = num_possible_prev_length
-    for _ in range(minLength + 1, maxLength + 1):
-        num_possible_values += ascii_char_length * num_possible_prev_length
-        if num_possible_values >= rowsToBeGenerated:
-            return True
-        num_possible_prev_length *= ascii_char_length
-    
-    print("JALSDHSDHALSHDLSKAD", num_possible_values)
-    return False
+    num_possible_strings = sum(char_set_length ** length for length in range(minLength, maxLength + 1))
 
+    print(f"num_possible_strings: {num_possible_strings}")
+    return num_possible_strings >= rowsToBeGenerated
