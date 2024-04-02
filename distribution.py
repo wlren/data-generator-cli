@@ -75,22 +75,26 @@ class FloatColumn:
             stddev = self.distribution_field["stddev"]
             data = generate_normal_distribution(mean, stddev, rows)
         else:
+            if self.isUnique:
+                data = self.generate_unique_floats(rows, self.decimal_point, self.min_value, self.max_value)
             data = np.random.uniform(low=self.min_value, high=self.max_value, size=rows)
         #Rounding to decimal point    
         data = [format(datum, f'.{self.decimal_point}f') for datum in data]
         return data
     
-    def generate_unique_floats(self, rows, min_value=DEFAULT_MIN_VALUE, max_value=DEFAULT_MAX_VALUE):
+    def generate_unique_floats(self, rows, dp, min_value=DEFAULT_MIN_VALUE, max_value=DEFAULT_MAX_VALUE):
         threshold = 0.9
-        if rows < threshold * (max_value - min_value + 1):
+        step = 1/(10**dp)
+        numPossibleValues = (max_value - min_value) / step
+        if rows < threshold * numPossibleValues:
             unique_floats = set()
             while len(unique_floats) < rows:
                 # Attempt to add a new unique float
-                unique_floats.add(np.random.uniform(low=min_value, high=max_value + 1))
+                unique_floats.add(np.round(np.random.uniform(low=min_value, high=max_value+step), dp))
             return np.array(list(unique_floats))
         else:
             # If the number of rows is close to the total number of values, generate the full range and shuffle
-            all_values = np.arange(min_value, max_value + 1)
+            all_values = np.arange(min_value, max_value + step, step=step)
             np.random.shuffle(all_values)
             return all_values[:rows]
 

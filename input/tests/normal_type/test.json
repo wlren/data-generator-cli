@@ -2,7 +2,7 @@
     "tables": [
         {
             "tableName": "NormalColumnsComparison",
-            "numRows": 50,
+            "numRows": 11,
             "columns": [
                 {
                     "fieldName": "personEmail",
@@ -113,7 +113,12 @@
                 {
                     "fieldName": "uniqueFloatColumn",
                     "type": "float",
-                    "isUnique": true
+                    "isUnique": true,
+                    "decimal_point": 1,
+                    "constraints": {
+                        "min": 0,
+                        "max": 1
+                    }
                 },
                 {
                     "fieldName": "uniqueIntegerColumnLowRange",
@@ -123,7 +128,7 @@
                         "min": 0,
                         "max": 49
                     }
-                }, 
+                },
                 {
                     "fieldName": "boolNullable",
                     "type": "boolean",
@@ -131,8 +136,8 @@
                     "percentageNull": 0.5
                 },
                 {
-                    "fieldName":"boolNonNullable",
-                    "type":"boolean",
+                    "fieldName": "boolNonNullable",
+                    "type": "boolean",
                     "isNullable": false
                 },
                 {
