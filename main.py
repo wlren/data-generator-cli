@@ -30,7 +30,7 @@ def main():
 
         column_data = {}
         primary_key = table["primary_key"]
-        foreign_keys = table["foreign_keys"]
+        foreign_keys = table.get("foreign_keys", [])
 
         # Single key
         for column in table["columns"]:
@@ -39,7 +39,8 @@ def main():
 
             if column_name in column_data:
                 continue
-            #Composite PK
+
+            # Composite PK
             if column_name in primary_key and len(primary_key) > 1:
                 composite_pk = handle_composite_pk_data(column, table, seed, primary_key, output_directory_path)
                 for name, data in composite_pk.items():
@@ -51,14 +52,16 @@ def main():
                     column_data[name] = data
             #Single PK (+ FK if total participation)
             elif column_name in primary_key:
-                column_data[column_name] = gen.generate_primary_key_data(column, table, seed)
-            #Single FK
+                column_data[column_name] = gen.generate_primary_key_data(column, table, seed, output_directory_path)
+            # Single FK
             elif gen.is_foreign_key(table, column_name)[0]:
-                column_data[column_name] = gen.generate_foreign_key_data(column, table, seed)
-            #Speical type
+                column_data[column_name] = gen.generate_foreign_key_data(
+                    column, table, seed, output_directory_path
+                )
+            # Speical type
             elif 'specialType' in column:
                 column_data[column_name] = gen.generate_special_data(column, table, seed)
-            #Normal type
+            # Normal type
             else:
                 column_data[column_name] = gen.generate_column_data(column, table, seed)
 
