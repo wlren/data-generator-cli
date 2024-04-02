@@ -2,7 +2,7 @@
     "tables": [
         {
             "tableName": "UniqueTextGeneration",
-            "numRows": 62,
+            "numRows": 238238,
             "columns": [
                 {
                     "fieldName": "textGeneration",
@@ -11,7 +11,9 @@
                         "minLength": 3,
                         "maxLength": 3
                     },
-                    "isUnique": true
+                    "isUnique": true,
+                    "isNullable": true,
+                    "percentageNull": 0.1
                 },
                 {
                     "fieldName": "textGeneration",
