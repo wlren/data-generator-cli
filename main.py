@@ -125,7 +125,8 @@ def handle_composite_pk_data(column, table, seed, primary_key, output_directory_
             elif len(fk_object['fieldName']) == 1:
                 fk_object["isNullable"] = False
                 fk_object["percentageNull"] = 0
-                pk_data_set[pk] = gen.get_foreignkey_data_set(fk_object["tableName"], references[0], output_directory_path)[references[0]]
+                references = fk_object["references"]
+                pk_data_set[pk] = gen.get_foreignkey_data_set(fk_object["tableName"], references, output_directory_path)[references[0]]
                 generated.add(pk)
         else:
             pk_data_set[pk] = gen.generate_primary_key_data(column, table, seed, output_directory_path)

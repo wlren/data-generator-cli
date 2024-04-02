@@ -300,7 +300,7 @@ def generate_composite_pkey_data(pk_data_set, primary_key, num_rows, seed, thres
     else:
         while len(selected) < num_rows:
             selected_idx = 0
-            chosenIndices = (0 for i in range(len(pk_data_set.keys())))
+            chosenIndices = [0 for i in range(len(pk_data_set.keys()))]
             
             for key, data in pk_data_set.items():
                 if isinstance(key, tuple):
@@ -314,12 +314,12 @@ def generate_composite_pkey_data(pk_data_set, primary_key, num_rows, seed, thres
                 chosenIndices[selected_idx] = index
                 selected_idx += 1
             
-            if chosenIndices in selected:
+            if tuple(chosenIndices) in selected:
                 for key in res.keys():
                     res[key].pop()
                 continue
             else:
-                selected.add(chosenIndices)
+                selected.add(tuple(chosenIndices))
             
         assert(len(primary_key) == len(res.keys()))
     return res
@@ -383,6 +383,7 @@ def get_foreignkey_data_set(
         f"{output_folder}/{foreign_table}.csv", column_name
     )
     res = {}
+
     if (len(pks) != len(column_name)):
         raise ValueError("Error when reading PK values from csvs!")
     for i in range(len(column_name)):
