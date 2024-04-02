@@ -35,7 +35,6 @@
                 {
                     "fieldName": "countryLat",
                     "type": "float",
-                    "specialType": "COUNTRY_LAT",
                     "distribution": {
                         "type": "uniform",
                         "min": -50.0,
@@ -45,7 +44,6 @@
                 {
                     "fieldName": "countryLon",
                     "type": "float",
-                    "specialType": "COUNTRY_LON",
                     "distribution": {
                         "type": "uniform",
                         "min": -180.0,

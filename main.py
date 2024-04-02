@@ -29,7 +29,6 @@ def main():
                 break
 
         column_data = {}
-        print(table)
         primary_key = []
         foreign_keys = []
         if "primary_key" in table:

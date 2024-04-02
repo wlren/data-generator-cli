@@ -11,7 +11,8 @@
                 },
                 {
                     "fieldName": "w_name",
-                    "type": "text"
+                    "type": "text",
+                    "specialType": "PERSON_NAME"
                 },
                 {
                     "fieldName": "w_street",
