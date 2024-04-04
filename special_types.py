@@ -25,8 +25,8 @@ class SpecialTypes(Enum):
     def has_matching_normal_type(self, normal_type):
         return normal_type == self.get_normal_type()
     
-    def convert_to_normal_type(self, data):
+    def convert_to_normal_type(self, data, decimal_point):
         if self in [SpecialTypes.COUNTRY_LAT, SpecialTypes.COUNTRY_LON]:
-            return float(data)
+            return round(float(data), decimal_point)
         else:
             return data

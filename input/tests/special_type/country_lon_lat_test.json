@@ -1,0 +1,38 @@
+{
+    "tables": [
+        {
+            "tableName": "LongitudeLatitudes",
+            "numRows": 50,
+            "columns": [
+                {
+                    "fieldName": "personEmail",
+                    "type": "text",
+                    "specialType": "PERSON_EMAIL"
+                },
+                {
+                    "fieldName": "countryLat",
+                    "type": "float",
+                    "decimal_point": 1,
+                    "specialType": "COUNTRY_LAT",
+                    "constraints": {
+                        "min": -50.0,
+                        "max": 50.0
+                    }
+                },
+                {
+                    "fieldName": "countryLon",
+                    "type": "float",
+                    "decimal_point": 10,
+                    "specialType": "COUNTRY_LON",
+                    "constraints": {
+                        "min": -180.0,
+                        "max": 180.0
+                    }
+                }
+            ],
+            "primary_key": [
+                "personEmail"
+            ]
+        }
+    ]
+}

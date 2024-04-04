@@ -8,6 +8,7 @@ import numpy as np
 import distribution
 import text_generation
 from special_types import SpecialTypes
+from distribution import FloatColumn
 
 '''
 Constraint helpers START
@@ -162,7 +163,14 @@ def generate_special_data(column, table, seed, reference=None):
         special_filepath = os.path.join('special_data', f"{column['specialType']}.txt")
         with open(special_filepath, 'r') as file:
             special_data = file.readlines()
-        special_data = [special_type.convert_to_normal_type(line.strip()) for line in special_data]
+        
+        # if data is float, it is rounded, not converted to string yet so we can do < and > comparisons
+        decimal_point = None
+        if normal_type == 'float':
+            decimal_point = column.get('decimal_point', FloatColumn.DEFAULT_DECIMAL_POINT)
+       
+        # contains only unique values
+        special_data = list(set([special_type.convert_to_normal_type(line.strip(), decimal_point) for line in special_data]))
         
 
         if not isNullable and percentageNull > 0:
@@ -174,8 +182,14 @@ def generate_special_data(column, table, seed, reference=None):
 
         if len(allowable_data) < numRowsToSample:
             raise ValueError(f"Insufficient data for special type {column['specialType']} to meet constraints. Num allowable data: {len(allowable_data)}, num rows to sample: {numRowsToSample}")
-
+        
         sampled_data = pd.Series(allowable_data).sample(n=numRowsToSample, random_state=seed, replace=isRepeatable).tolist()
+
+        # convert float to string so decimal points are fixed. cannot do earlier because get_allowable_special_data needs to compare floats
+        # e.g. round(1.00, 2) gives 1.0, but we want 1.00 for 2 d.p.
+        if normal_type == 'float':
+            sampled_data =  [format(datum, f'.{decimal_point}f') for datum in sampled_data]
+
 
     result = []
     for i in range(num_rows):
