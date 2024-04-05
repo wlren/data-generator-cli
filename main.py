@@ -43,7 +43,7 @@ def main():
 
             # Composite PK
             if column_name in primary_key and len(primary_key) > 1:
-                composite_pk = handle_composite_pk_data(column, table, seed, primary_key, output_directory_path, column_data)
+                composite_pk = handle_composite_pk_data(table, seed, primary_key, output_directory_path, column_data)
                 
                 for name, data in composite_pk.items():
                     column_data[name] = data
@@ -81,7 +81,7 @@ def main():
         IOHandler.writeCSV(output_directory_path, df, table_name)
   
   
-def handle_composite_pk_data(column, table, seed, primary_key, output_directory_path, column_data):
+def handle_composite_pk_data(table, seed, primary_key, output_directory_path, column_data):
     pk_data_set = {}
     generated = set()
     for pk in primary_key:
@@ -129,7 +129,12 @@ def handle_composite_pk_data(column, table, seed, primary_key, output_directory_
                 pk_data_set[pk] = gen.get_foreignkey_data_set(fk_object["tableName"], references, output_directory_path)[references[0]]
                 generated.add(pk)
         else:
-            pk_data_set[pk] = gen.generate_primary_key_data(column, table, seed, output_directory_path)
+            curr_column = None
+            for column in table["columns"]:
+                if column["fieldName"] == pk:
+                    curr_column = column
+                    break
+            pk_data_set[pk] = gen.generate_primary_key_data(curr_column, table, seed, output_directory_path)
             generated.add(pk)
         
     return gen.generate_composite_pkey_data(pk_data_set, primary_key, table["numRows"], seed)
